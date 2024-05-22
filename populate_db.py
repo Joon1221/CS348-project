@@ -1,0 +1,1 @@
+# running this script will populate the database with course offerings/information using UWaterloo OpenData API
