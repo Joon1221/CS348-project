@@ -10,6 +10,7 @@ Installations:
 
 -cd frontend/frontend and run:
     npm install axios
+    npm install react-scripts
 
 To run the app:
 - cd backend and run:
