@@ -18,28 +18,34 @@ connection = engine.connect()
 if connection:
     print("Connection to the PostgreSQL database established successfully.")
 
-# Create a new table
-connection.execute(text("""
-    CREATE TABLE IF NOT EXISTS test_table (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100),
-        age INT
-    )
-"""))
+# Connect to the database and execute a query
+with engine.connect() as connection:
+    # Create table if not exists
+    connection.execute(text("""
+        CREATE TABLE IF NOT EXISTS test_table (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100),
+            age INT
+        )
+    """))
 
-# Insert data into the table
-connection.execute(text("""
-    INSERT INTO test_table (name, age) VALUES 
-    ('Alice', 30), 
-    ('Bob', 25)
-"""))
+    # Insert data into the table
+    connection.execute(text("""
+        INSERT INTO test_table (name, age) VALUES 
+        ('Alice', 30), 
+        ('Bob', 25)
+    """))
 
-# Query the table
-result = connection.execute(text("SELECT * FROM test_table"))
+    # Commit the transaction
+    connection.commit()
 
-# Print the results
-for row in result:
-    print(row)
+    # Execute a SELECT query
+    result = connection.execute(text("SELECT * FROM test_table"))
+
+    # Fetch and print the results
+    for row in result:
+        print(row)
+
 
 # Close the connection
 connection.close()
