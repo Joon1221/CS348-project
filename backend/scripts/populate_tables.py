@@ -1,6 +1,14 @@
 # running this script will populate the database with course offerings/information using UWaterloo OpenData API
 from sqlalchemy import create_engine, text
 
+def populate_table(table_name, tuple_structure, tuples):
+    # Insert data into the table
+    connection.execute(text(f"""INSERT INTO {table_name} {tuple_structure} VALUES 
+        {tuples}"""))
+
+    # Commit the transaction
+    connection.commit()
+
 # Define the PostgreSQL database URL
 username = 'postgres'
 password = '1234'
@@ -29,21 +37,13 @@ with engine.connect() as connection:
         )
     """))
 
-    # Insert data into the table
-    connection.execute(text("""
-        INSERT INTO test_table (name, age) VALUES 
-        ('Alice', 30), 
-        ('Bob', 25)
-    """))
+populate_table("test_table", "("name", age)", "("Amy", 46), ("Bob", 66)")
 
-    # Commit the transaction
-    connection.commit()
+# Execute a SELECT query
+result = connection.execute(text("SELECT * FROM test_table"))
 
-    # Execute a SELECT query
-    result = connection.execute(text("SELECT * FROM test_table"))
-
-    # Fetch and print the results
-    for row in result:
+# Fetch and print the results
+for row in result:
         print(row)
 
 
