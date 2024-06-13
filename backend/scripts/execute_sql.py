@@ -26,7 +26,8 @@ def execute(query, username='postgres', password='1234', return_result=False):
             if command:
                 if return_result:
                     result = conn.execute(text(command))
-                    for result in conn.execute(text(command)):
+                    print(result_list)
+                    for result in result:
                         for row in result:
                             print(row)
                             
@@ -41,6 +42,7 @@ if __name__ == '__main__':
     parser.add_argument("-f", dest="filename", required=True)
     arguments = parser.parse_args()
     results = execute_file(arguments.filename, return_result=True)
+    print(results)
     for result in results:
         for row in result:
             print(row)
