@@ -37,7 +37,7 @@ with engine.connect() as connection:
         )
     """))
 
-populate_table("test_table", "("name", age)", "("Amy", 46), ("Bob", 66)")
+populate_table("test_table", "(\"name\", age)", "(\"Amy\", 46), (\"Bob\", 66)")
 
 # Execute a SELECT query
 result = connection.execute(text("SELECT * FROM test_table"))
