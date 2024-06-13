@@ -1,48 +1,31 @@
 from sqlalchemy import create_engine, text
-from sys import argv
-import re
 import argparse
 
-def execute_file(filename, username='postgres', password='1234', return_result=False):
+def execute_file(filename, username='postgres', password='1234'):
     file = open(f'../sql/{filename}.sql', 'r')
     query = file.read()
     file.close()
 
-    execute(query, username, password, return_result)
+    return execute(query, username, password)
 
-def execute(query, username='postgres', password='1234', return_result=False):
+def execute(query, username='postgres', password='1234'):
     host = 'localhost'
     port = '5432'
     database = 'postgres'
 
     db = create_engine(f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}')
 
-    sql_commands = query.split(';')
-    result_list = []
-
-    print(sql_commands)
     with db.connect() as conn:
-        for command in sql_commands:
-            if command:
-                if return_result:
-                    result = conn.execute(text(command))
-                    print(result_list)
-                    for result in result:
-                        for row in result:
-                            print(row)
-                            
-                else:
-                    conn.execute(text(command))
-                conn.commit()
-
-        return result_list
+        result = conn.execute(text(query))
+        conn.commit()
+        return result
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    # Need to add support for return_result and query without filename
     parser.add_argument("-f", dest="filename", required=True)
     arguments = parser.parse_args()
-    results = execute_file(arguments.filename, return_result=True)
+    results = execute_file(arguments.filename)
     print(results)
-    for result in results:
-        for row in result:
-            print(row)
+    for row in results:
+        print(row)
