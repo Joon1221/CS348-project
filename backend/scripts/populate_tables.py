@@ -1,52 +1,37 @@
 # running this script will populate the database with course offerings/information using UWaterloo OpenData API
 from sqlalchemy import create_engine, text
 from execute_sql import execute_file, execute
+from parse_json import get_courses
 
 def populate_table(table_name, tuple_structure, tuples):
     # Insert data into the table
-    connection.execute(text(f"""INSERT INTO {table_name} {tuple_structure} VALUES 
-        {tuples}"""))
+    execute(f"""INSERT INTO {table_name} {tuple_structure} VALUES 
+        {tuples}""")
 
-    # Commit the transaction
-    connection.commit()
+execute_file("create_tables")
 
-# Define the PostgreSQL database URL
-username = 'postgres'
-password = '1234'
-host = 'localhost'
-port = '5432'
-database = 'postgres'
+course_json = get_courses()
 
-# Create the engine
-engine = create_engine(f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}')
+courses = []
+for course in course_json:
+    # Manually skip redundant courses
+    if course['courseId'] in ['010423', '012710']:
+        continue 
+    
+    # Create tuples and append
+    title = course['title'].replace('\'', '')
+    desc = course['descriptionAbbreviated'].replace('\'', '')
+    cur_course = (course['courseId'], course['subjectCode'], course['catalogNumber'], title, desc)
+    
+    courses.append(cur_course)
 
-# Connect to the database
-connection = engine.connect()
+populate_table("Course", "(course_id, subject_code, catalog_number, course_name, course_desc)", str(courses)[1:-1])
 
-# Check if the connection is established
-if connection:
-    print("Connection to the PostgreSQL database established successfully.")
-
-# Connect to the database and execute a query
-with engine.connect() as connection:
-    # Create table if not exists
-    connection.execute(text("""
-        CREATE TABLE IF NOT EXISTS test_table (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100),
-            age INT
-        )
-    """))
-
-populate_table("test_table", "(\"name\", age)", "(\"Amy\", 46), (\"Bob\", 66)")
 
 # Execute a SELECT query
-result = connection.execute(text("SELECT * FROM test_table"))
+# result = execute("SELECT * FROM Course")
 
 # Fetch and print the results
-for row in result:
-        print(row)
+# for row in result:
+    # print(row)
 
-
-# Close the connection
-connection.close()
