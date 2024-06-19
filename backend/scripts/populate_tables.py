@@ -1,5 +1,6 @@
 # running this script will populate the database with course offerings/information using UWaterloo OpenData API
 from sqlalchemy import create_engine, text
+from execute_sql import execute_file, execute
 
 def populate_table(table_name, tuple_structure, tuples):
     # Insert data into the table
