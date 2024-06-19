@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function HelloWorld() {
+const listOfItems = (items) => {
+  return Object.values(items).map((course, i) => <li key={i}>{course}</li>);
+};
+
+const addUserCourse = (courseToAdd) => {
+  axios
+    .put("http://localhost:8000/api/put_user_course/", {
+      data: courseToAdd,
+    })
+    .then((response) => {
+      console.log(response.data.message);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export default function HomePage() {
   const [curUserCourses, setCurUserCourses] = useState("");
   const [courses, setCourses] = useState([]);
   const [courseToAdd, setCourseToAdd] = useState("");
@@ -16,28 +33,8 @@ function HelloWorld() {
         console.log(error);
       });
   };
-  const listOfCourses = Object.values(courses).map((course, i) => (
-    <li key={i}>{course}</li>
-  ));
 
-  const currentSchedule = Object.values(curUserCourses).map((course, i) => (
-    <li key={i}>{course}</li>
-  ));
-
-  const addUserCourse = (courseToAdd) => {
-    axios
-      .put("http://localhost:8000/api/put_user_course/", {
-        data: courseToAdd,
-      })
-      .then((response) => {
-        console.log(response.data.message);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
+  const getUserCourses = () => {
     axios
       .get("http://localhost:8000/api/get_user_course/")
       .then((response) => {
@@ -46,13 +43,18 @@ function HelloWorld() {
       .catch((error) => {
         console.log(error);
       });
-  }, [addUserCourse]);
+  };
+
+  useEffect(() => {
+    getUserCourses();
+  }, [getUserCourses]);
 
   return (
-    <div>
+    <>
       <h1>Student Course Planning App</h1>
+      <h3>Please enter a course code you would like to add to your schedule</h3>
       <textarea
-        placeholder="Please enter a course code"
+        placeholder="Enter a course code"
         onChange={(e) => {
           setCourseToAdd(e.target.value);
         }}
@@ -62,15 +64,13 @@ function HelloWorld() {
           addUserCourse(courseToAdd);
         }}
       >
-        Click here to add this course
+        Add course
       </button>
       <h1>Current Schedule:</h1>
-      <p>{currentSchedule}</p>
-      <button onClick={getAllCourses}>Click here to get 10 courses</button>
+      <p>{listOfItems(curUserCourses)}</p>
+      <button onClick={getAllCourses}>Get Top 10 Courses</button>
       <h1>Top 10 Courses</h1>
-      {listOfCourses}
-    </div>
+      <p>{listOfItems(courses)}</p>
+    </>
   );
 }
-
-export default HelloWorld;

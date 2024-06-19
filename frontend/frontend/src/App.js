@@ -1,8 +1,8 @@
 import React from "react";
-import HelloWorld from "./HelloWorld";
+import HomePage from "./components/HomePage";
 
 function App() {
-  return <HelloWorld />;
+  return <HomePage />;
 }
 
 export default App;
