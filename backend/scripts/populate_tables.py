@@ -8,7 +8,6 @@ def populate_table(table_name, tuple_structure, tuples):
     execute(f"""INSERT INTO {table_name} {tuple_structure} VALUES 
         {tuples}""")
 
-execute_file("create_tables")
 
 course_json = get_courses()
 
