@@ -1,0 +1,13 @@
+MATH 135
+SE 463
+
+('000003', 'ACC', '610', 'Public Accounting Practice', 'Public Accounting Practice')
+('000004', 'ACC', '611', 'External Reporting with Integration', 'External Reporting')
+('000011', 'ACC', '625', 'Foundations of Venture Creation', 'Venture Creation')
+('000012', 'ACC', '626', 'IT Assurance and Computer-Assisted Audit Techniques', 'IT Assurance & Comp Aud Tech')
+('000013', 'ACC', '627', 'Business Process Enablement and Project Management', 'Bus Proc Enable & Proj Mgmt')
+('000020', 'ACC', '650', 'Assurance and Governance', 'Assurance & Governance')
+('000024', 'ACC', '662', 'Tax Policy', 'Tax Policy')
+('000028', 'ACC', '680', 'Systems and Analysis for Management Decision-making', 'Systems & Analysis for Mang DM')
+('000029', 'ACC', '681', 'Understanding and Managing Organizational Change', 'Understanding Mgmt Org Change')
+('000030', 'ACC', '690', 'Topics in Accounting', 'Topics in Accounting')
