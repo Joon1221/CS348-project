@@ -18,16 +18,16 @@ CREATE TABLE Prereq(
 );
 
 
--- CREATE TABLE IF NOT EXISTS Prof (
---     username VARCHAR(8) NOT NULL PRIMARY KEY,
---     name VARCHAR(50) NOT NULL,
---     rating INT -- might be NULL if the prof is new? not sure how uwflow works
--- );
+CREATE TABLE Prof (
+    username VARCHAR(8) NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    rating INT -- might be NULL if the prof is new? not sure how uwflow works
+);
 
--- CREATE TABLE IF NOT EXISTS Student (
---     username VARCHAR(8) NOT NULL PRIMARY KEY,
---     acad_level VARCHAR(3) -- might be NULL if student is going into first year? idk
--- );
+CREATE TABLE Student (
+    username VARCHAR(8) NOT NULL PRIMARY KEY,
+    acad_level VARCHAR(3) -- might be NULL if student is going into first year? idk
+);
 
 CREATE TABLE EnrolledIn (
     student_username VARCHAR(8) NOT NULL,
