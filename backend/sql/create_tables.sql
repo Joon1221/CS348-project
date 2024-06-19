@@ -79,17 +79,17 @@ CREATE TABLE IF NOT EXISTS Course (
 --     Location VARCHAR(50),
 -- );
 
--- CREATE TABLE CurrentSchedule (
---     student_username VARCHAR(8) NOT NULL,
---     course_id INT NOT NULL,
---     section_id INT NOT NULL,
---     term INT NOT NULL,
---     course_id VARCHAR(10) NOT NULL,
---     PRIMARY KEY (student_username, section_id),
---     FOREIGN KEY (student_username) REFERENCES Student(username),
---     FOREIGN KEY (course_id, section_id, term) REFERENCES Section(course_id, section_id, term)
---     FOREIGN KEY (course_id) REFERENCES Course(course_id)
--- );
+CREATE TABLE IF NOT EXISTS CurrentSchedule (
+    -- student_username VARCHAR(8) NOT NULL,
+    -- course_id INT NOT NULL,
+    -- section_id INT NOT NULL,
+    -- term INT NOT NULL,
+    course_id VARCHAR(10) NOT NULL
+    -- PRIMARY KEY (student_username, section_id),
+    -- FOREIGN KEY (student_username) REFERENCES Student(username),
+    -- FOREIGN KEY (course_id, section_id, term) REFERENCES Section(course_id, section_id, term)
+    -- FOREIGN KEY (course_id) REFERENCES Course(course_id)
+);
 
 -- CREATE TABLE CoursesTaken (
 --     student_username VARCHAR(8) NOT NULL,
