@@ -61,21 +61,7 @@ CREATE TABLE IF NOT EXISTS Course (
 --     component_type VARCHAR(3),
 --     currently_enrolled INT NOT NULL,
 --     total_cap_size INT NOT NULL,
---     PRIMARY(course_id, section_id, term) 
--- );
-
--- CREATE TABLE InPersonSection (
---     course_id INT NOT NULL ,
---     section_number INT NOT NULL,
---     section_id INT NOT NULL,
---     term INT NOT NULL,
---     start_time TIME NOT NULL,
---     end_time TIME NOT NULL,
---     weekdays VARCHAR(10) -- M,T,W,Th,F,Sa,Su
---     component_type VARCHAR(3),
---     currently_enrolled INT NOT NULL,
---     total_cap_size INT NOT NULL,
---     FOREIGN KEY(course_id, section_number, section_id, term, start_time, end_time, weekdays, component_type, currently_enrolled,total_cap_size) REFERENCES Section(course_id, section_number, section_id, term, start_time, end_time, weekdays, component_type, currently_enrolled,total_cap_size),
+--     PRIMARY(course_id, section_id, term),
 --     Location VARCHAR(50),
 -- );
 
