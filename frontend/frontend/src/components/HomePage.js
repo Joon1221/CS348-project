@@ -1,5 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+
+const MainContainer = styled.div`
+  width: 600px;
+  height: 700px;
+  margin: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+`;
 
 const listOfItems = (items) => {
   return Object.values(items).map((course, i) => <li key={i}>{course}</li>);
@@ -22,6 +38,7 @@ export default function HomePage() {
   const [curUserCourses, setCurUserCourses] = useState("");
   const [courses, setCourses] = useState([]);
   const [courseToAdd, setCourseToAdd] = useState("");
+  const [isInputValid, setIsInputValid] = useState(true);
 
   const getAllCourses = () => {
     axios
@@ -50,27 +67,46 @@ export default function HomePage() {
   }, [getUserCourses]);
 
   return (
-    <>
-      <h1>Student Course Planning App</h1>
-      <h3>Please enter a course code you would like to add to your schedule</h3>
-      <textarea
-        placeholder="Enter a course code"
+    <MainContainer>
+      <Title>UWaterloo Student Course Planning App</Title>
+      <TextField
+        variant="outlined"
+        placeholder="Type a course code you would like to add to your schedule"
+        helperText={
+          !isInputValid
+            ? "Invalid input. Please try again and enter a valid input."
+            : ""
+        }
+        error={!isInputValid}
         onChange={(e) => {
           setCourseToAdd(e.target.value);
+          setIsInputValid(true);
         }}
+        style={{ marginBottom: "15px" }}
       />
-      <button
+      <Button
+        variant="outlined"
         onClick={() => {
-          addUserCourse(courseToAdd);
+          if (courseToAdd.length !== 0 && courseToAdd !== null) {
+            addUserCourse(courseToAdd);
+          } else {
+            setIsInputValid(false);
+          }
         }}
       >
-        Add course
-      </button>
-      <h1>Current Schedule:</h1>
-      <p>{listOfItems(curUserCourses)}</p>
-      <button onClick={getAllCourses}>Get Top 10 Courses</button>
-      <h1>Top 10 Courses</h1>
-      <p>{listOfItems(courses)}</p>
-    </>
+        Add Course
+      </Button>
+      <Title>Current Schedule</Title>
+      <p>{curUserCourses && listOfItems(curUserCourses)}</p>
+      <Button variant="outlined" onClick={getAllCourses}>
+        Click to Get Top 10 Courses
+      </Button>
+      {courses.length > 0 && (
+        <>
+          <Title>Top 10 Courses</Title>
+          <p>{listOfItems(courses)}</p>
+        </>
+      )}
+    </MainContainer>
   );
 }
