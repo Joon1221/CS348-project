@@ -1,3 +1,3 @@
-DROP TABLE Course;
+-- DROP TABLE Course;
 DROP TABLE CurrentSchedule;
-DROP TABLE LoginCredentials;
+-- DROP TABLE LoginCredentials;

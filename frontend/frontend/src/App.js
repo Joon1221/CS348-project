@@ -1,8 +1,20 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
+import SignUp from "./components/SignUp";
 import HomePage from "./components/HomePage";
+import SignIn from "./components/SignIn";
 
-function App() {
-  return <HomePage />;
+export default function App() {
+  return (
+    <UserProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/home" element={<HomePage />} />
+        </Routes>
+      </Router>
+    </UserProvider>
+  );
 }
-
-export default App;

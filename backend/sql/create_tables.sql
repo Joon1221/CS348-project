@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS CurrentSchedule (
     -- section_id INT NOT NULL,
     -- term INT NOT NULL,
     course_id VARCHAR(10) NOT NULL,
-    PRIMARY KEY (student_username)
+    PRIMARY KEY (student_username, course_id)
     -- FOREIGN KEY (student_username) REFERENCES Student(username),
     -- FOREIGN KEY (course_id, section_id, term) REFERENCES Section(course_id, section_id, term)
     -- FOREIGN KEY (course_id) REFERENCES Course(course_id)
