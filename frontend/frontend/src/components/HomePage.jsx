@@ -4,10 +4,12 @@ import axios from "axios";
 import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import { UserContext } from "../context/UserContext";
 
 const MainContainer = styled.div`
-  width: 600px;
+  width: 1000px;
   height: 700px;
   margin: 1rem;
   padding: 1rem;
@@ -17,6 +19,19 @@ const MainContainer = styled.div`
 
 const Title = styled.h1`
   text-align: center;
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+  height: 100%;
+  margin-top: 20px;
+`;
+
+const TabPanel = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
 `;
 
 const listOfItems = (items) => {
@@ -58,7 +73,7 @@ const useUserCourses = (username) => {
         username: username,
       })
       .then((response) => {
-        // console.log(response.data.message);
+        console.log(`Response:`, response.data.message)
         getUserCourses();
       })
       .catch((error) => {
@@ -80,15 +95,22 @@ const useUserCourses = (username) => {
 
 export default function HomePage() {
   const { user, signOut } = useContext(UserContext);
-  const { userCourses, courses, getAllCourses, addUserCourse } = useUserCourses(user?.username);
+  const { userCourses, courses, getAllCourses, addUserCourse } = useUserCourses(
+    user?.username
+  );
   const navigate = useNavigate();
 
   const [courseToAdd, setCourseToAdd] = useState("");
   const [isInputValid, setIsInputValid] = useState(true);
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const handleSignOut = () => {
     signOut();
     navigate("/");
+  };
+
+  const handleTabChange = (_, newValue) => {
+    setSelectedTab(newValue);
   };
 
   return (
@@ -97,48 +119,75 @@ export default function HomePage() {
       <Button
         variant="outlined"
         onClick={handleSignOut}
-        style={{ marginBottom: "15px" }}
+        style={{ marginTop: "15px" }}
       >
         Sign Out
       </Button>
-      <TextField
-        variant="outlined"
-        placeholder="Type a course code you would like to add to your schedule"
-        helperText={
-          !isInputValid
-            ? "Invalid input. Please try again and enter a valid input."
-            : ""
-        }
-        error={!isInputValid}
-        onChange={(e) => {
-          setCourseToAdd(e.target.value);
-          setIsInputValid(true);
-        }}
-        style={{ marginBottom: "15px" }}
-      />
-      <Button
-        variant="outlined"
-        onClick={() => {
-          if (courseToAdd.length !== 0 && courseToAdd !== null) {
-            addUserCourse(courseToAdd);
-          } else {
-            setIsInputValid(false);
-          }
-        }}
-      >
-        Add Course
-      </Button>
-      <Title>Current Schedule</Title>
-      {userCourses.length === 0 ? <h3>No courses</h3> : <ul>{listOfItems(userCourses)}</ul>}
-      <Button variant="outlined" onClick={getAllCourses}>
-        Click to Get Top 10 Courses
-      </Button>
-      {courses.length > 0 && (
-        <>
-          <Title>Top 10 Courses</Title>
-          <ul>{listOfItems(courses)}</ul>
-        </>
-      )}
+      <TabContainer>
+        <Tabs
+          orientation="vertical"
+          variant="scrollable"
+          value={selectedTab}
+          onChange={handleTabChange}
+          style={{ width:300, textAlign: 'left'}}
+        >
+          <Tab label="Manage Schedule"  />
+          <Tab label="View Course List" />
+        </Tabs>
+        <TabPanel>
+          {selectedTab === 0 && (
+            <>
+              <TextField
+                variant="outlined"
+                placeholder="Type a course code you would like to add to your schedule"
+                helperText={
+                  !isInputValid
+                    ? "Invalid input. Please try again and enter a valid input."
+                    : ""
+                }
+                error={!isInputValid}
+                onChange={(e) => {
+                  setCourseToAdd(e.target.value);
+                  setIsInputValid(true);
+                }}
+                style={{ marginBottom: "15px" }}
+              />
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  if (courseToAdd.length !== 0 && courseToAdd !== null) {
+                    addUserCourse(courseToAdd);
+                  } else {
+                    setIsInputValid(false);
+                  }
+                }}
+              >
+                Add Course
+              </Button>
+              <h2>Current Schedule</h2>
+              {userCourses.length === 0 ? (
+                <h3>No courses</h3>
+              ) : (
+                <ul>{listOfItems(userCourses)}</ul>
+              )}
+            </>
+          )}
+          {selectedTab === 1 && (
+            <>
+              <Button variant="outlined" onClick={getAllCourses}>
+                Click to Get Top 10 Courses
+              </Button>
+              {courses.length > 0 && (
+                <>
+                  <Title>Top 10 Courses</Title>
+                  <ul>{listOfItems(courses)}</ul>
+                </>
+              )}
+            </>
+          )}
+        </TabPanel>
+      </TabContainer>
+
     </MainContainer>
   );
 }
