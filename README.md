@@ -20,6 +20,10 @@ Then, in the terminal type: `cd frontend/frontend` and run:
 - In a new terminal, cd frontend/frontend and run:
     `npm start`
 
+### How to generate the "production" dataset and load the database
+We are querying data from the [UWaterloo OpenData API](https://openapi.data.uwaterloo.ca/api-docs/index.html).This resource provides us with lists of JSON objects that contain information on courses including the course code, description, offerings, etc. We use backend/scripts/parse_json.py to get a comma separated list of tuples of the values from the json file. We then use backend/scripts/populate_tables.py to insert these tuples into the desired database. 
+
+submit the URL where you download/scrape the raw data (if applicable), and the code that extracts and transforms (or generates) the production dataset. 
 
 ## List of Implemented Features
 
