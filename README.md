@@ -29,15 +29,15 @@ The following features have been implemented for Milestone 2.
 ![alt text](img/SignInPage.png)
 ![alt text](img/SignUpPage.png)
 The implementation of these features are located in:
-- frontend/frontend/src/components/SignIn.jsx
-- frontend/frontend/src/components/SignUp.jsx
+- frontend/frontend/src/components/Auth/SignIn.jsx
+- frontend/frontend/src/components/Auth/SignUp.jsx
 
 2. Manage user schedule (Milestone 2)
 ![alt text](img/ManageSchedule.png)
 The implemention of this feature is located in:
-- frontend/frontend/src/components/HomePage.jsx
+- frontend/frontend/src/components/ManageSchedule.jsx
 
 3. View Course List (Milesone 2)
 ![alt text](img/ViewCourseList.png)
 The implementation of this feature is located in:
-- frontend/frontend/src/components/HomePage.jsx
+- frontend/frontend/src/components/CourseList.jsx
