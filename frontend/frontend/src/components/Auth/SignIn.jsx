@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import { TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Button, TextField } from "@mui/material";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 const MainContainer = styled.div`
   width: 600px;
@@ -14,61 +13,58 @@ const MainContainer = styled.div`
   flex-direction: column;
 `;
 
-const createUser = ({ username, password }) => {
-  axios
-    .put("http://localhost:8000/api/signup_user/", {
-      username: username,
-      password: password,
-    })
-    .then((response) => {
-      console.log(response.data.message);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+const Title = styled.h1`
+  text-align: center;
+`;
 
-export default function SignUp() {
+export default function SignIn() {
   let navigate = useNavigate();
   const { setUser } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignUp = () => {
-    createUser({ username, password });
-    setUser({ username });
-    navigate("/home");
-  };
-
   return (
     <MainContainer>
-      <h1>Create Account Page</h1>
+      <Title>UWaterloo Student Course Planning App</Title>
+      <h1 style={{ textAlign: "center" }}>Sign In</h1>
       <TextField
         variant="outlined"
         label="Username"
-        placeholder="Enter username"
         value={username}
         onChange={(e) => {
           setUsername(e.target.value);
         }}
+        placeholder="Enter username"
       />
       <TextField
         variant="outlined"
         label="Password"
         placeholder="Enter password"
         type="password"
+        style={{ marginTop: "10px" }}
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
         }}
-        style={{ marginTop: "15px" }}
       />
       <Button
         variant="outlined"
         style={{ marginTop: "10px" }}
-        onClick={handleSignUp}
+        onClick={() => {
+          setUser({ username });
+          navigate("/home");
+        }}
       >
-        Sign Up
+        Sign In
+      </Button>
+      <Button
+        variant="outlined"
+        style={{ marginTop: "30px" }}
+        onClick={() => {
+          navigate("/signup");
+        }}
+      >
+        Create an account
       </Button>
     </MainContainer>
   );
