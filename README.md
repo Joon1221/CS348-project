@@ -28,7 +28,7 @@ We are querying data from the [UWaterloo OpenData API](https://openapi.data.uwat
 
 The following features have been implemented for Milestone 2.
 
-The SQL queries are found in the backend at backend/api/views.py and the feature implemention details are in the found below. 
+The SQL queries are found in the backend at backend/api/views.py and the feature implemention details are found below. 
 
 1. Login/Sign in (Milestone 2)
 ![alt text](img/SignInPage.png)

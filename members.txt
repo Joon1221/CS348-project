@@ -1,0 +1,29 @@
+
+Joon Kang (j222kang):
+For milestone 0, I worked on gathering sample data from the UWaterlooAPI and writing the script for executing SQL queries in the database. Added support for handling SQL queries sent in as a string or as a .sql file. I was able to get a test table populated with random values through python code and have it show up on PgAdmin (or any other database viewer). 
+
+For milestone 1, I worked on populating the Course table with all of the courses from UWaterloo API. Optimized the process of populating the Course table by using a single SQL query with all of the information instead of creating and executing an SQL query for every course. This reduced the overhead of having to create the SQL engine in python multiple times. Created the test-sample.out and .txt files. Added support for deletion of tables. Helped out with connecting the front end, the back end, and the SQL execution scripts so that the inputs and outputs can be sent back and forth. 
+
+For milestone 2, I worked on creating the LoginCredentials table to handle the log in/sign up feature and made some minor changes to other tables. Created SQL queries to handle the implementation details of logging in and signing up. Updated and organized the views.py in our backend Django which handles all of our HTTP requests. Help other group members update and populate the tables in their local PostgreSQL database to the updated versions. 
+
+
+Grace Song (g52song):
+For milestone 0, I helped with generating ideas for the project and identifying what features we could potentially include in our project.
+
+For milestone 1, I worked on determining the requirements and structuring the requirements as an E/R diagram, and I developed SQL queries to create the tables. I also wrote some more complex queries (e.g. the query supplied in feature 3) to look further ahead into what our features would look like when our tables are fully populated. 
+
+For milestone 2, I supported the early design of the frontend layout and helped in identifying our 6 features to account for feedback from milestone 1. I also wrote up the query templates for the 3 non-implemented features, and made minor changes to the E/R diagram and relational database structure to account for new features and data accessibility limitations. As well, while this is not directly related to the project’s progress, I have been going through React tutorials to learn the basics and contribute more to the implementation side of the project for the finished product.
+
+Jeannie Quach (j25quach):
+For milestone 0, I looked into setting up the database schema (with pgAdmin), creating/connecting to a server on the backend, and getting all team members set up on the same developer environments.
+
+For milestone 1, I worked on determining the requirements and translating the requirements into an E/R diagram. I worked on writing SQL queries to create the tables, and I worked on setting up the frontend code. I worked on connecting the backend to the frontend and I created the base components in the frontend. Specifically, I created components allowing a user to display their current courses, get the top 10 courses from our database and add courses to their current schedule on our homepage (C5).
+
+For milestone 2, I mainly worked on developing, improving and creating the frontend structure. I created pages allowing users to create and sign into and out of their accounts and styled the existing pages. I worked on connecting the backend endpoints (of creating/signing users) to the front end and keeping track of the user’s information once they’ve logged into our application. I also separated and refactored the existing pages into our features above (ManagePage.jsx and CourseSchedule.jsx) in preparation for implementing future features. Finally, I helped with some of the report by writing about the test cases, taking screenshots of the implemented features and updating the readme.
+
+Jade Forrest (j6forres):
+For milestone 0, I worked on setting up React for the frontend, as well as connecting the frontend to the backend of Django. I also worked with teammates on connecting our backend to postgreSQL in order to send commands and information to the database from the backend.
+
+For milestone 1, I continued working on the backend, querying information from the Waterloo OpenAPI resource, and formatting the data we received in order for it to be able to populate our tables. I also worked on creating functionality that allows us to dynamically insert the data into a table by specifying the table name and tuple structure of the entries (as opposed to hard coding the population of different tables when names/schema changes). I also separated out the creation of tables from their population in order to make “populate table” functionality have more generalized usability (allows us to also use it for updates).  
+
+For milestone 2, I continued working on the backend, working on creating the new LoginCredentials table, as well as functionality to populate this table when requests are received from the frontend. This included GET requests when a user goes to log into our application, and sending the correct response for the frontend depending on whether or not the account exists. This also required implementation for PUT requests for user signup that use the user inputted data as a new entry for the new table. This required sending the correct response message to indicate failure if the proposed username already exists in the database. 
