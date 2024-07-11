@@ -16,6 +16,7 @@ export default function ManageSchedule({
 }) {
   return (
     <>
+    <h2>Add Course</h2>
       <TextField
         variant="outlined"
         placeholder="Type a course code you would like to add to your schedule"
