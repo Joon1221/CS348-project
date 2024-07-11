@@ -2,7 +2,19 @@ import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Button, TextField } from "@mui/material";
+import {
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 import { UserContext } from "../../context/UserContext";
 
 const MainContainer = styled.div`
@@ -33,6 +45,8 @@ export default function SignUp() {
   const { setUser } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = () => {
     createUser({ username, password });
@@ -45,27 +59,52 @@ export default function SignUp() {
       <h1>Create Account</h1>
       <TextField
         variant="outlined"
-        label="Username"
-        placeholder="Enter username"
+        label="WATIAM"
+        placeholder="Enter WATIAM username"
         value={username}
         onChange={(e) => {
           setUsername(e.target.value);
         }}
       />
-      <TextField
-        variant="outlined"
-        label="Password"
-        placeholder="Enter password"
-        type="password"
-        value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-        style={{ marginTop: "15px" }}
-      />
+      <FormControl variant="outlined" style={{ marginTop: "15px" }}>
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? "text" : "password"}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword((show) => !show)}
+                onMouseDown={(e)=> e.preventDefault()}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          placeholder="Enter password"
+          label="Password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+        />
+      </FormControl>
+      <FormControl style={{ marginTop: "35px" }}>
+        <InputLabel>Role</InputLabel>
+        <Select
+          value={role}
+          label="Role"
+          onChange={(e) => setRole(e.target.value)}
+        >
+          <MenuItem value={0}>Student</MenuItem>
+          <MenuItem value={1}>Professor</MenuItem>
+        </Select>
+      </FormControl>
       <Button
         variant="outlined"
-        style={{ marginTop: "10px" }}
+        style={{ marginTop: "20px" }}
         onClick={handleSignUp}
       >
         Sign Up
