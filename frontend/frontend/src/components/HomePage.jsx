@@ -58,7 +58,6 @@ export default function HomePage() {
           </Button>
         </HeaderEnd>
       </Header>
-
       {isProf && <ProfTabs />}
       {!isProf && <StudTabs user={user} />}
     </MainContainer>
