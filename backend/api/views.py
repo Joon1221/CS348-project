@@ -19,6 +19,17 @@ def execute(query, username='postgres', password='1234'):
         conn.commit()
         return result
 
+def get_course_id(subject_code, catalog_number):
+    query = f"""
+    SELECT course_id FROM Course
+    WHERE subject_code = {subject_code} AND catalog_number = {catalog_number}
+    """
+    
+    result = execute(query)
+    if not result:
+        return Response({'message': 'Course not found'}, 404)
+    
+    return result[0][0] 
 
 @api_view(['GET'])
 def hello_world(request):
@@ -26,9 +37,9 @@ def hello_world(request):
 
 
 # ========================================
-# View All Courses Feature
+# View All Courses
 # ========================================
-# TO DO:(jade)
+# TO DO:(jade) 
 #   - Filter by department, etc
 #   - Order based on filter
 #   - Send list of lists instead of list of strings
@@ -44,26 +55,24 @@ def get_all_courses(request):
 
 
 # ========================================
-# Manage User Courses Feature
+# Manage User Courses
 # ========================================
 # TO DO:(jade)
 #   - Delete course from user
 #   - Update course for user
+#   - right now we are using subjct_code+catalog_number as the course_id. 
+#     we need to make sure we are using the actual course_id.
+#     Look at View Student Course History for reference (at the very bottom)
 
 @api_view(['GET'])
 def get_user_course(request):
-    # print("HELLO", request.body)
-    # request_json = json.loads(request.body)
     username = unquote(request.GET.get('username', ''))
-    # username = 'name'
 
-    # print("HELLO", request_json)
-
-    result = execute(
-        f"SELECT * FROM CurrentSchedule WHERE username = '{username}' LIMIT 10")
+    result = execute(f"SELECT * FROM CurrentSchedule WHERE username = '{username}'")
+    
     courses = []
     for row in result:
-        courses.append(','.join(map(str, row)))
+        courses.append(','.join(map(str, row))) # need to fix courses.append here
 
     return Response({'message': courses})
 
@@ -75,13 +84,12 @@ def put_user_course(request):
     course = request_json['data']
     username = request_json['username']
 
-    execute(
-        f"INSERT INTO CurrentSchedule (username, course_id) VALUES('{username}', '{course}')")
+    execute(f"INSERT INTO CurrentSchedule (username, course_id) VALUES('{username}', '{course}')")
     return Response({'message': 200})
 
 
 # ========================================
-# Login/Sign Up Feature
+# Login/Sign Up
 # ========================================
 # TO DO: (joon)
 #   - Differentiate between student and professor DONE
@@ -149,4 +157,69 @@ def signup_user(request):
 # TO DO:
 #   - Return info such as GPA Average, total credits, etc
 #   - prerequisite checking?
+
+@api_view(['GET'])
+def get_user_course_taken(request):
+    username = unquote(request.GET.get('username', ''))
+
+    query = f"""
+    SELECT c.subject_code, c.catalog_number 
+    FROM CoursesTaken ct
+    JOIN Course c ON ct.course_id = c.course_id
+    WHERE ct.username = {username}
+    """
+
+    result = execute(query, username)
+    
+    courses = []
+    for row in result:
+        courses.append(' '.join(map(str, row)))
+
+    return Response({'message': courses})
+
+
+@api_view(['PUT'])
+def put_user_course_taken(request):
+    request_json = json.loads(request.body)
+
+    subject_code = request_json['subject_code']
+    catalog_number = request_json['catalog_number']
+    username = request_json['username']
+
+    course_id = get_course_id(subject_code, catalog_number)
+
+    # Insert the course_id into CurrentSchedule
+    insert_query = f"""
+    INSERT INTO CurrentSchedule (username, course_id)
+    VALUES ({username}, {course_id})
+    """
+    
+    execute(insert_query)
+
+    return Response({'message': 200})
+
+@api_view(['PUT'])
+def update_user_course_taken(request):
+    request_json = json.loads(request.body)
+
+    username = request_json['username']
+    cur_subject_code = request_json['cur_subject_code']
+    cur_catalog_number = request_json['cur_catalog_number']
+
+    new_subject_code = request_json['new_subject_code']
+    new_catalog_number = request_json['new_catalog_number']
+
+    cur_course_id = get_course_id(cur_subject_code, cur_catalog_number)
+    new_course_id = get_course_id(new_subject_code, new_catalog_number)
+
+    # Update the CurrentSchedule with the new course_id
+    update_query = f"""
+    UPDATE CurrentSchedule
+    SET course_id = '{new_course_id}'
+    WHERE username = '{username}' AND course_id = '{cur_course_id}'
+    """
+
+    execute(update_query)
+
+    return Response({'message': 200})
 
