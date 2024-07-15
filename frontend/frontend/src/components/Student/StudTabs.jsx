@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import useUserCourses from "../../hooks/useUserCourses";
-import ManageSchedule from "./ManageSchedule";
+import ManageSchedule from "./ManageScheduleComponents/ManageSchedule";
 import CourseList from "./CourseList";
 import CoursesTaken from "./CoursesTaken";
 import SectionList from "./SectionList";
@@ -19,16 +19,14 @@ const TabPanel = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 1rem;
 `;
 
 export default function StudTabs({ user }) {
-  const { userCourses, courses, getAllCourses, addUserCourse } = useUserCourses(
+  const { courses, getAllCourses, userCourses, addUserCourse } = useUserCourses(
     user?.username
   );
 
-  const [courseToAdd, setCourseToAdd] = useState("");
-  const [isInputValid, setIsInputValid] = useState(true);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleTabChange = (_, newValue) => {
@@ -44,9 +42,9 @@ export default function StudTabs({ user }) {
         onChange={handleTabChange}
         style={{ width: "225px" }}
         sx={{
-            '&& .MuiTab-root': {
-                alignItems: 'baseline'
-            },
+          "&& .MuiTab-root": {
+            alignItems: "baseline",
+          },
         }}
       >
         <Tab label="Manage Schedule" />
@@ -58,10 +56,6 @@ export default function StudTabs({ user }) {
       <TabPanel>
         {selectedTab === 0 && (
           <ManageSchedule
-            courseToAdd={courseToAdd}
-            setCourseToAdd={setCourseToAdd}
-            isInputValid={isInputValid}
-            setIsInputValid={setIsInputValid}
             userCourses={userCourses}
             addUserCourse={addUserCourse}
           />
