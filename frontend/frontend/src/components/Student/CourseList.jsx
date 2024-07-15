@@ -1,17 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 const Title = styled.h1`
   text-align: center;
 `;
 
-const listOfItems = (items) => {
-  return items.map((course, i) => <li key={i}>{course}</li>);
-};
-
+// const listOfItems = (items) => {
+//   return items.map((course, i) => <li key={i}>{course}</li>);
+// };
 
 export default function CourseList({ courses, getAllCourses }) {
   const [filteredCourses, setFilteredCourses] = useState(courses);
@@ -29,7 +28,7 @@ export default function CourseList({ courses, getAllCourses }) {
             id="tags-outlined"
             options={courses}
             onChange={(event, newValue) => {
-              if (newValue.length == 0) setFilteredCourses(courses);
+              if (newValue.length === 0) setFilteredCourses(courses);
               else setFilteredCourses(newValue);
             }}
             // getOptionLabel={(option) => option.title}
@@ -44,11 +43,11 @@ export default function CourseList({ courses, getAllCourses }) {
             )}
           />
           <>
-          {filteredCourses.map(courses => (
-            <div key={courses}>
-              <p>{courses}</p>
-            </div>
-          ))}
+            {filteredCourses.map((courses) => (
+              <div key={courses}>
+                <p>{courses}</p>
+              </div>
+            ))}
           </>
         </>
       )}

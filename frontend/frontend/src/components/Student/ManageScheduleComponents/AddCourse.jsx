@@ -26,9 +26,31 @@ const ContentContainer = styled.div`
 `;
 
 export default function AddCourse({ addUserCourse, setView }) {
-  const [courseToAdd, setCourseToAdd] = useState("");
+  const [subjectCode, setSubjectCode] = useState(""); // eg. CS
+  const [catalogNum, setCatalogNum] = useState(""); // 348
   const [isInputValid, setIsInputValid] = useState(true);
-  // Transform userCourses to add an id property
+
+  const handleAddCourse = () => {
+    if (subjectCode.trim() === "" || catalogNum.trim() === "") {
+      setIsInputValid(false);
+      return;
+    }
+
+    const catalogNumInt = parseInt(catalogNum, 10);
+    if (isNaN(catalogNumInt) || catalogNumInt <= 0) {
+      setIsInputValid(false);
+      return;
+    }
+
+    const courseToAdd = subjectCode.trim() + catalogNumInt;
+
+    if (courseToAdd.length > 0) {
+      addUserCourse(courseToAdd);
+      setView("default");
+    } else {
+      setIsInputValid(false);
+    }
+  };
 
   return (
     <MainContainer>
@@ -41,8 +63,8 @@ export default function AddCourse({ addUserCourse, setView }) {
       <ContentContainer>
         <TextField
           variant="outlined"
-          label="Course Number"
-          placeholder="Enter course number"
+          label="Subject Code"
+          placeholder="Enter subject code"
           helperText={
             !isInputValid
               ? "Invalid input. Please try again and enter a valid input."
@@ -50,21 +72,35 @@ export default function AddCourse({ addUserCourse, setView }) {
           }
           error={!isInputValid}
           onChange={(e) => {
-            setCourseToAdd(e.target.value);
+            setSubjectCode(e.target.value);
             setIsInputValid(true);
           }}
           style={{ marginBottom: "15px" }}
         />
-        <Button
+        <TextField
           variant="outlined"
-          onClick={() => {
-            if (courseToAdd.length !== 0 && courseToAdd !== null) {
-              addUserCourse(courseToAdd);
-            } else {
+          label="Catalog Number"
+          placeholder="Enter catalog number"
+          helperText={
+            !isInputValid
+              ? "Invalid input. Please try again and enter a valid input."
+              : ""
+          }
+          error={!isInputValid}
+          onChange={(e) => {
+            setCatalogNum(e.target.value);
+            if (
+              e.target.value.length > 0 &&
+              (isNaN(e.target.value) || e.target.value <= 0)
+            ) {
               setIsInputValid(false);
+            } else {
+              setIsInputValid(true);
             }
           }}
-        >
+          style={{ marginBottom: "15px" }}
+        />
+        <Button variant="outlined" onClick={handleAddCourse}>
           Add Course
         </Button>
       </ContentContainer>
