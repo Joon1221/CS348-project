@@ -9,8 +9,6 @@ import CurrentSchedule from "./CurrentSchedule";
 import DeleteCourse from "./DeleteCourse";
 
 const MainContainer = styled.div`
-  /* align-items: center; */
-  //background-color: pink;
   height: 100%;
   width: 100%;
 `;
@@ -19,7 +17,6 @@ const ManageScheduleContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  //background-color: pink;
   height: 100%;
   width: 100%;
 `;
@@ -69,7 +66,7 @@ export default function ManageSchedule({ userCourses, addUserCourse }) {
       default:
         return (
           <>
-            <h2>Manage Schedule</h2>
+            <h2>Manage Course Schedule</h2>
             <ButtonContainer>
               <ScheduleOptionButton
                 iconType={CalendarMonthIcon}

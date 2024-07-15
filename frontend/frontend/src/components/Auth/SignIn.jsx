@@ -21,8 +21,15 @@ const MainContainer = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
 `;
+
+const ContentContainer = styled.div`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`
 
 const Title = styled.h1`
   text-align: center;
@@ -37,8 +44,9 @@ export default function SignIn() {
 
   return (
     <MainContainer>
-      <Title>UWaterloo Student Course Planning App</Title>
+      <Title>UWaterloo Course Planning</Title>
       <h1 style={{ textAlign: "center" }}>Sign In</h1>
+      <ContentContainer>
       <TextField
         variant="outlined"
         label="WATIAM"
@@ -92,6 +100,7 @@ export default function SignIn() {
       >
         Create an account
       </Button>
+      </ContentContainer>
     </MainContainer>
   );
 }

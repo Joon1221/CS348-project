@@ -46,7 +46,7 @@ export default function HomePage() {
   return (
     <MainContainer>
       <Header>
-        <Title>UWaterloo Student Course Planning App</Title>
+        <Title>UWaterloo Course Planning</Title>
         <HeaderEnd>
           <p>Welcome, {user.username}</p>
           <Button
