@@ -49,8 +49,10 @@ def get_all_courses(request):
     result = execute("SELECT * FROM Course LIMIT 10")
     courses = []
     for row in result:
-        # print(row)
-        courses.append(','.join(map(str, row)))
+        course = []
+        for i in row:
+            course.append(row[i])
+        courses.append(course)
 
     return Response({'message': courses})
 
@@ -58,7 +60,7 @@ def get_all_courses(request):
 # ========================================
 # Manage User Courses
 # ========================================
-# TO DO:(jade)
+# DONE:(jade)
 #   - Delete course from user
 #   - Update course for user
 #   - right now we are using subjct_code+catalog_number as the course_id. 
@@ -77,7 +79,6 @@ def get_user_course(request):
         for i in row:
             course.append(row[i])
         courses.append(course)
-        # courses.append(','.join(map(str, row))) # need to fix courses.append here
 
     return Response({'message': courses})
 
