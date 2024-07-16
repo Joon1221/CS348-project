@@ -49,6 +49,7 @@ def get_all_courses(request):
     result = execute("SELECT * FROM Course LIMIT 10")
     courses = []
     for row in result:
+        # print(row)
         courses.append(','.join(map(str, row)))
 
     return Response({'message': courses})
@@ -64,7 +65,7 @@ def get_all_courses(request):
 #     we need to make sure we are using the actual course_id.
 #     Look at View Student Course History for reference (at the very bottom)
 
-@api_view(['GET'])
+@api_view(['GET']) 
 def get_user_course(request):
     username = unquote(request.GET.get('username', ''))
 
@@ -72,7 +73,11 @@ def get_user_course(request):
     
     courses = []
     for row in result:
-        courses.append(','.join(map(str, row))) # need to fix courses.append here
+        course = []
+        for i in row:
+            course.append(row[i])
+        courses.append(course)
+        # courses.append(','.join(map(str, row))) # need to fix courses.append here
 
     return Response({'message': courses})
 
@@ -87,6 +92,51 @@ def put_user_course(request):
     execute(f"INSERT INTO CurrentSchedule (username, course_id) VALUES('{username}', '{course}')")
     return Response({'message': 200})
 
+@api_view(['PUT'])
+def update_user_course(request):
+    request_json = json.loads(request.body)
+
+    username = request_json['username']
+    cur_subject_code = request_json['cur_subject_code']
+    cur_catalog_number = request_json['cur_catalog_number']
+
+    new_subject_code = request_json['new_subject_code']
+    new_catalog_number = request_json['new_catalog_number']
+
+    cur_course_id = get_course_id(cur_subject_code, cur_catalog_number)
+    new_course_id = get_course_id(new_subject_code, new_catalog_number)
+
+    # Update the CurrentSchedule with the new course_id
+    update_query = f"""
+    UPDATE CurrentSchedule
+    SET course_id = '{new_course_id}'
+    WHERE username = '{username}' AND course_id = '{cur_course_id}'
+    """
+
+    execute(update_query)
+
+    return Response({'message': 200})
+
+@api_view(['PUT'])
+def delete_user_course(request):
+    request_json = json.loads(request.body)
+
+    course = request_json['data']
+    username = request_json['username']
+
+    # execute(f"DELETE FROM CurrentSchedule WHERE username='{username}' AND course_id='{course}')")
+
+    query = f"""
+        DELETE c.subject_code, c.catalog_number 
+        FROM CurrentSchedule ct
+        JOIN Course c ON ct.course_id = c.course_id
+        WHERE ct.username ='{username}' AND
+        ct.course_id='{course}'
+        """
+
+    execute(query, username)
+
+    return Response({'message': 200})
 
 # ========================================
 # Login/Sign Up
@@ -188,12 +238,12 @@ def put_user_course_taken(request):
 
     course_id = get_course_id(subject_code, catalog_number)
 
-    # Insert the course_id into CurrentSchedule
+    # Insert the course_id into CoursesTaken
     insert_query = f"""
-    INSERT INTO CurrentSchedule (username, course_id)
+    INSERT INTO CoursesTaken (username, course_id)
     VALUES ({username}, {course_id})
     """
-    
+
     execute(insert_query)
 
     return Response({'message': 200})
@@ -212,9 +262,9 @@ def update_user_course_taken(request):
     cur_course_id = get_course_id(cur_subject_code, cur_catalog_number)
     new_course_id = get_course_id(new_subject_code, new_catalog_number)
 
-    # Update the CurrentSchedule with the new course_id
+    # Update the CoursesTaken with the new course_id
     update_query = f"""
-    UPDATE CurrentSchedule
+    UPDATE CoursesTaken
     SET course_id = '{new_course_id}'
     WHERE username = '{username}' AND course_id = '{cur_course_id}'
     """
@@ -223,3 +273,21 @@ def update_user_course_taken(request):
 
     return Response({'message': 200})
 
+@api_view(['PUT'])
+def delete_user_course_taken(request):
+    request_json = json.loads(request.body)
+
+    course = request_json['data']
+    username = request_json['username']
+
+    query = f"""
+        DELETE c.subject_code, c.catalog_number 
+        FROM CoursesTaken ct
+        JOIN Course c ON ct.course_id = c.course_id
+        WHERE ct.username ='{username}' AND
+        ct.course_id='{course}'
+        """
+
+    execute(query, username)
+
+    return Response({'message': 200})

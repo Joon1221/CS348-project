@@ -13,7 +13,7 @@ def execute(query, username='postgres', password='1234'):
     port = '5432'
     database = 'postgres'
 
-    db = create_engine(f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}')
+    db = create_engine(f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}', future=True)
 
     with db.connect() as conn:
         result = conn.execute(text(query))
