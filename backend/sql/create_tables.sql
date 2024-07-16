@@ -4,17 +4,18 @@ CREATE TABLE IF NOT EXISTS Course (
     catalog_number VARCHAR(6) NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     course_desc VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (subject_code, catalog_number)
+    PRIMARY KEY (subject_code, catalog_number),
+    UNIQUE(course_id)
 );
 
 CREATE TABLE IF NOT EXISTS Prof (
-    username VARCHAR(8) NOT NULL PRIMARY KEY, -- change to reference?
+    username VARCHAR(8) NOT NULL PRIMARY KEY -- change to reference?
     -- name VARCHAR(50) NOT NULL,
     -- rating INT -- might be NULL if the prof is new? not sure how uwflow works
 );
 
 CREATE TABLE IF NOT EXISTS Student (
-    username VARCHAR(8) NOT NULL PRIMARY KEY, -- change to reference?
+    username VARCHAR(8) NOT NULL PRIMARY KEY -- change to reference?
     -- acad_level VARCHAR(3) -- might be NULL if student is going into first year? idk
 );
 

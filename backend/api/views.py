@@ -121,17 +121,18 @@ def update_user_course(request):
 def delete_user_course(request):
     request_json = json.loads(request.body)
 
-    course = request_json['data']
+    subject_code = request_json['data']['subject_code']
+    catalog_number = request_json['data']['catalog_number']
+
     username = request_json['username']
 
-    # execute(f"DELETE FROM CurrentSchedule WHERE username='{username}' AND course_id='{course}')")
-
     query = f"""
-        DELETE c.subject_code, c.catalog_number 
+        DELETE ct
         FROM CurrentSchedule ct
         JOIN Course c ON ct.course_id = c.course_id
-        WHERE ct.username ='{username}' AND
-        ct.course_id='{course}'
+        WHERE ct.username = '{username}' 
+        AND c.subject_code = '{subject_code}' 
+        AND c.catalog_number = '{catalog_number}'
         """
 
     execute(query, username)
@@ -277,15 +278,18 @@ def update_user_course_taken(request):
 def delete_user_course_taken(request):
     request_json = json.loads(request.body)
 
-    course = request_json['data']
+    subject_code = request_json['data']['subject_code']
+    catalog_number = request_json['data']['catalog_number']
+
     username = request_json['username']
 
     query = f"""
-        DELETE c.subject_code, c.catalog_number 
+        DELETE ct
         FROM CoursesTaken ct
         JOIN Course c ON ct.course_id = c.course_id
-        WHERE ct.username ='{username}' AND
-        ct.course_id='{course}'
+        WHERE ct.username = '{username}' 
+        AND c.subject_code = '{subject_code}' 
+        AND c.catalog_number = '{catalog_number}'
         """
 
     execute(query, username)
