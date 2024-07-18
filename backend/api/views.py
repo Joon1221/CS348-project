@@ -50,8 +50,8 @@ def get_all_courses(request):
     courses = []
     for row in result:
         course = []
-        for i in row:
-            course.append(row[i])
+        for element in row:
+            course.append(element)
         courses.append(course)
 
     return Response({'message': courses})
