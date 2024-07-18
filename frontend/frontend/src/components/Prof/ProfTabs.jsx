@@ -39,7 +39,7 @@ export default function ProfTabs() {
             },
         }}
       >
-        <Tab label="Current Students"  />
+        <Tab label="Student History"  />
         <Tab label="Profile" />
       </Tabs>
       <TabPanel>
