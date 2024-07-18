@@ -87,11 +87,22 @@ def get_user_course(request):
 def put_user_course(request):
     request_json = json.loads(request.body)
 
-    course = request_json['data']
+    subject_code = request_json['subject_code']
+    catalog_number = request_json['catalog_number']
     username = request_json['username']
 
-    execute(f"INSERT INTO CurrentSchedule (username, course_id) VALUES('{username}', '{course}')")
+    course_id = get_course_id(subject_code, catalog_number)
+
+    # Insert the course_id into CoursesTaken
+    insert_query = f"""
+    INSERT INTO CurrentSchedule (username, course_id)
+    VALUES ({username}, {course_id})
+    """
+
+    execute(insert_query)
+
     return Response({'message': 200})
+
 
 @api_view(['PUT'])
 def update_user_course(request):
