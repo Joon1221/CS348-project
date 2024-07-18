@@ -14,7 +14,7 @@ course_json = get_courses()
 courses = []
 for course in course_json:
     # Manually skip redundant courses
-    if course['courseId'] in ['010423', '012710']:
+    if course['courseId'] in ['010423', '012710', '000044', '000045']:
         continue 
     
     # Create tuples and append

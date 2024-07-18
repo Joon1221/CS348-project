@@ -4,8 +4,7 @@ CREATE TABLE IF NOT EXISTS Course (
     catalog_number VARCHAR(6) NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     course_desc VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (subject_code, catalog_number),
-    UNIQUE(course_id)
+    PRIMARY KEY (course_id, subject_code, catalog_number)
 );
 
 CREATE TABLE IF NOT EXISTS Prof (
@@ -34,8 +33,8 @@ CREATE TABLE IF NOT EXISTS CurrentSchedule (
 CREATE TABLE IF NOT EXISTS CoursesTaken (
     username VARCHAR(8) NOT NULL,
     course_id VARCHAR(10) NOT NULL,
-    PRIMARY KEY (username, course_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    PRIMARY KEY (username, course_id)
+    -- FOREIGN KEY (course_id) REFERENCES Course(course_id)
 );
 
 CREATE TABLE IF NOT EXISTS LoginCredentials (
