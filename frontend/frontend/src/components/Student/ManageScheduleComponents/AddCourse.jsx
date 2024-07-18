@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { TextField } from "@mui/material";
+import { TextField, Autocomplete } from "@mui/material";
 import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -24,6 +24,12 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+// const courseDepts = [
+//   { label: "AFM"},
+//   { label: "CS" },
+//   { label: "MATH" },
+// ];
 
 export default function AddCourse({ addUserCourse, setView }) {
   const [subjectCode, setSubjectCode] = useState(""); // eg. CS
@@ -61,6 +67,13 @@ export default function AddCourse({ addUserCourse, setView }) {
         <h2>Add Course</h2>
       </Header>
       <ContentContainer>
+        {/* <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={courseDepts}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Subject Code" />}
+        /> */}
         <TextField
           variant="outlined"
           label="Subject Code"
