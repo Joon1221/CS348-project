@@ -23,9 +23,13 @@ const TabPanel = styled.div`
 `;
 
 export default function StudTabs({ user }) {
-  const { courses, getAllCourses, userCourses, addUserCourse } = useUserCourses(
-    user?.username
-  );
+  const {
+    courses,
+    getAllCourses,
+    userCourses,
+    addUserCourse,
+    deleteUserCourse,
+  } = useUserCourses(user?.username);
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -47,7 +51,7 @@ export default function StudTabs({ user }) {
           },
         }}
       >
-        <Tab label="Manage Schedule" />
+        <Tab label="Schedule" />
         <Tab label="Courses" />
         <Tab label="Courses Taken" />
         <Tab label="Class Sections" />
@@ -58,6 +62,7 @@ export default function StudTabs({ user }) {
           <ManageSchedule
             userCourses={userCourses}
             addUserCourse={addUserCourse}
+            deleteUserCourse={deleteUserCourse}
           />
         )}
         {selectedTab === 1 && (
@@ -65,7 +70,7 @@ export default function StudTabs({ user }) {
         )}
         {selectedTab === 2 && <CoursesTaken />}
         {selectedTab === 3 && <SectionList />}
-        {selectedTab === 4 && <Profile username={user.username}/>}
+        {selectedTab === 4 && <Profile username={user.username} />}
       </TabPanel>
     </TabContainer>
   );

@@ -18,26 +18,35 @@ import Visibility from "@mui/icons-material/Visibility";
 import { UserContext } from "../../context/UserContext";
 
 const MainContainer = styled.div`
-  width: 600px;
-  height: 700px;
+  width: "80%";
+  height: 400px;
   margin: 1rem;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
-const createUser = ({ username, password }) => {
-  axios
-    .put("http://localhost:8000/api/signup_user/", {
+const ContentContainer = styled.div`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const createUser = async ({ username, password, isProf }) => {
+  try {
+    const response = await axios.put("http://localhost:8000/api/signup_user/", {
       username: username,
       password: password,
-    })
-    .then((response) => {
-      console.log(response.data.message);
-    })
-    .catch((error) => {
-      console.log(error);
+      is_prof: isProf,
     });
+    //console.log("success", response);
+    return response.data.message;
+  } catch (error) {
+    //console.log("error", error.response);
+    throw error.response.data;
+  }
 };
 
 export default function SignUp() {
@@ -47,68 +56,96 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [isInvalid, setIsInvalid] = useState({
+    errorMsg: "",
+    error: false,
+  });
 
-  const handleSignUp = () => {
-    createUser({ username, password });
-    setUser({ username });
-    navigate("/home");
+  const handleSignUp = async () => {
+    const isProf = role === 0 ? false : true;
+    try {
+      await createUser({ username, password, isProf });
+      setUser({ username, isProf });
+      navigate("/home");
+    } catch (error) {
+      // console.log("Error creating user:", error.message);
+      setIsInvalid({
+        errorMsg:
+          error.message === "username_exists"
+            ? "This user already has an account"
+            : "ERROR creating account",
+        error: true,
+      });
+    }
   };
 
   return (
     <MainContainer>
       <h1>Create Account</h1>
-      <TextField
-        variant="outlined"
-        label="WATIAM"
-        placeholder="Enter WATIAM username"
-        value={username}
-        onChange={(e) => {
-          setUsername(e.target.value);
-        }}
-      />
-      <FormControl variant="outlined" style={{ marginTop: "15px" }}>
-        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-password"
-          type={showPassword ? "text" : "password"}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword((show) => !show)}
-                onMouseDown={(e)=> e.preventDefault()}
-                edge="end"
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          }
-          placeholder="Enter password"
-          label="Password"
-          value={password}
+      <ContentContainer>
+        <TextField
+          error={isInvalid.error}
+          variant="outlined"
+          label="WATIAM"
+          placeholder="Enter WATIAM username"
+          value={username}
           onChange={(e) => {
-            setPassword(e.target.value);
+            setUsername(e.target.value);
           }}
         />
-      </FormControl>
-      <FormControl style={{ marginTop: "35px" }}>
-        <InputLabel>Role</InputLabel>
-        <Select
-          value={role}
-          label="Role"
-          onChange={(e) => setRole(e.target.value)}
+        <FormControl variant="outlined" style={{ marginTop: "15px" }}>
+          <InputLabel>Password</InputLabel>
+          <OutlinedInput
+            type={showPassword ? "text" : "password"}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword((show) => !show)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            placeholder="Enter password"
+            label="Password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            error={isInvalid.error}
+          />
+        </FormControl>
+        {isInvalid.error && (
+          <p style={{ color: "red" }}>{isInvalid.errorMsg}</p>
+        )}
+        <FormControl style={{ marginTop: "35px" }}>
+          <InputLabel>Role</InputLabel>
+          <Select
+            value={role}
+            label="Role"
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <MenuItem value={0}>Student</MenuItem>
+            <MenuItem value={1}>Professor</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          variant="contained"
+          style={{ marginTop: "20px" }}
+          onClick={handleSignUp}
         >
-          <MenuItem value={0}>Student</MenuItem>
-          <MenuItem value={1}>Professor</MenuItem>
-        </Select>
-      </FormControl>
-      <Button
-        variant="outlined"
-        style={{ marginTop: "20px" }}
-        onClick={handleSignUp}
-      >
-        Sign Up
-      </Button>
+          Sign Up
+        </Button>
+        <Button
+          variant="outlined"
+          style={{ marginTop: "20px" }}
+          onClick={() => navigate("/")}
+        >
+          Cancel
+        </Button>
+      </ContentContainer>
     </MainContainer>
   );
 }

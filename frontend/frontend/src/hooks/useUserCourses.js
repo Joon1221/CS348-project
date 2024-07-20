@@ -20,7 +20,7 @@ const useUserCourses = (username) => {
 
   const getAllCourses = () => {
     axios
-      .get("http://localhost:8000/api/get_all_courses/")
+      .get("http://localhost:8000/api/get_subject_codes/")
       .then((response) => {
         setCourses(response.data.message);
       })
@@ -29,11 +29,28 @@ const useUserCourses = (username) => {
       });
   };
 
-  const addUserCourse = (courseToAdd) => {
+  const addUserCourse = ({ subject_code, catalog_number }) => {
     axios
       .put("http://localhost:8000/api/put_user_course/", {
-        data: courseToAdd,
         username: username,
+        subject_code: subject_code,
+        catalog_number: catalog_number,
+      })
+      .then((response) => {
+        console.log(`Response:`, response.data.message);
+        getUserCourses();
+      })
+      .catch((error) => {
+        console.log(`Add Course Error: ${error}`);
+      });
+  };
+
+  const deleteUserCourse = ({ subject_code, catalog_number }) => {
+    axios
+      .put("http://localhost:8000/api/delete_user_course/", {
+        username: username,
+        subject_code: subject_code,
+        catalog_number: catalog_number,
       })
       .then((response) => {
         console.log(`Response:`, response.data.message);
@@ -53,7 +70,35 @@ const useUserCourses = (username) => {
     courses,
     getAllCourses,
     addUserCourse,
+    deleteUserCourse,
   };
 };
 
 export default useUserCourses;
+
+export const getAllDept = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/api/get_subject_codes/"
+    );
+    return response.data.message;
+  } catch (error) {
+    console.error(`Get all department error:${error}`);
+  }
+};
+
+export const getAllDeptCourseCode = async (subject_code) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/api/get_catalog_numbers/",
+      {
+        params: {
+          subject_code: subject_code,
+        },
+      }
+    );
+    return response.data.message;
+  } catch (error) {
+    console.error(`Get all department error:${error}`);
+  }
+};

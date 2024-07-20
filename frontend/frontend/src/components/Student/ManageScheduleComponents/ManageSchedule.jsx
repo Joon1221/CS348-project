@@ -52,7 +52,7 @@ const ScheduleOptionButton = ({ iconType, width, title, onClick }) => {
   );
 };
 
-export default function ManageSchedule({ userCourses, addUserCourse }) {
+export default function ManageSchedule({ userCourses, addUserCourse, deleteUserCourse}) {
   const [view, setView] = useState("default");
 
   const renderView = () => {
@@ -62,7 +62,7 @@ export default function ManageSchedule({ userCourses, addUserCourse }) {
       case "add":
         return <AddCourse setView={setView} addUserCourse={addUserCourse} />;
       case "delete":
-        return <DeleteCourse setView={setView} userCourses={userCourses} />;
+        return <DeleteCourse setView={setView} userCourses={userCourses} deleteUserCourse={deleteUserCourse} />;
       default:
         return (
           <>

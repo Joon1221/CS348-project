@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import ProfStudInfo from "./ProfStudInfo";
 import Profile from "../Shared/Profile";
+import ManageCoursesTaught from "./ManageCoursesTaught";
 
 const TabContainer = styled.div`
   display: flex;
@@ -32,19 +33,21 @@ export default function ProfTabs() {
         variant="scrollable"
         value={selectedTab}
         onChange={handleTabChange}
-        style={{ width: "225px" }}
+        style={{ width: "250px" }}
         sx={{
-            '&& .MuiTab-root': {
-                alignItems: 'baseline'
-            },
+          "&& .MuiTab-root": {
+            alignItems: "baseline",
+          },
         }}
       >
-        <Tab label="Student History"  />
+        <Tab label="Students" />
+        <Tab label="Courses Taught" />
         <Tab label="Profile" />
       </Tabs>
       <TabPanel>
-        {selectedTab === 0 && <ProfStudInfo/>}
-        {selectedTab === 1 && <Profile/>}
+        {selectedTab === 0 && <ProfStudInfo />}
+        {selectedTab === 1 && <ManageCoursesTaught />}
+        {selectedTab === 2 && <Profile />}
       </TabPanel>
     </TabContainer>
   );

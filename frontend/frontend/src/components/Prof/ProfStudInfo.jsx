@@ -61,19 +61,19 @@ const columns = [
   //   width: 160,
   //   valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
   // },
-  {
-    field: "edit",
-    headerName: "Edit",
-    sortable: false,
-    width: 140,
-    renderCell: (params) => {
-      return (
-        <div style={{ cursor: "pointer" }}>
-          <MatEdit index={params.row.id} />
-        </div>
-      );
-    },
-  },
+  // {
+  //   field: "edit",
+  //   headerName: "Edit",
+  //   sortable: false,
+  //   width: 140,
+  //   renderCell: (params) => {
+  //     return (
+  //       <div style={{ cursor: "pointer" }}>
+  //         <MatEdit index={params.row.id} />
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
 
 // MOCK DATA
@@ -96,41 +96,41 @@ const rows = [
 ];
 
 export default function ProfStudInfo() {
-  const [selectedStudent, setSelectedStudent] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
+  // const [selectedStudent, setSelectedStudent] = useState({});
+  // const [isEditing, setIsEditing] = useState(false);
 
-  const handleEditClick = (studentInfo) => {
-    setSelectedStudent(studentInfo);
-    setIsEditing(true);
-  };
+  // const handleEditClick = (studentInfo) => {
+  //   setSelectedStudent(studentInfo);
+  //   setIsEditing(true);
+  // };
 
   return (
     <>
-      {!isEditing && (
-        <MainContainer>
-          <Header>
-            <h2>History of Students</h2>
-          </Header>
-          <DataGrid
-            checkboxSelection={false}
-            disableMultipleRowSelection
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
-              },
-            }}
-            onCellClick={(e) => {
-              console.log(e.row)
-              handleEditClick(e.row);
-            }}
-            pageSizeOptions={[10, 20]}
-            style={{height: '85%'}}
-          />
-        </MainContainer>
-      )}
-      {isEditing && <EditStudent setIsEditing={setIsEditing} selectedStudent={selectedStudent} />}
+      {/* {!isEditing && ( */}
+      <MainContainer>
+        <Header>
+          <h2>History of Students</h2>
+        </Header>
+        <DataGrid
+          checkboxSelection={false}
+          disableMultipleRowSelection
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          onCellClick={(e) => {
+            // console.log(e.row)
+            // handleEditClick(e.row);
+          }}
+          pageSizeOptions={[10, 20]}
+          style={{ height: "85%" }}
+        />
+      </MainContainer>
+      {/* )} */}
+      {/* {isEditing && <EditStudent setIsEditing={setIsEditing} selectedStudent={selectedStudent} />} */}
     </>
   );
 }

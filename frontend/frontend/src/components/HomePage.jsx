@@ -36,7 +36,8 @@ const Title = styled.h1`
 export default function HomePage() {
   const { user, signOut } = useContext(UserContext);
   const navigate = useNavigate();
-  const [isProf, setIsProf] = useState(false);
+  const username = user.username;
+  const isProf = user.isProf;
 
   const handleSignOut = () => {
     signOut();
@@ -48,7 +49,7 @@ export default function HomePage() {
       <Header>
         <Title>UWaterloo Course Planning</Title>
         <HeaderEnd>
-          <p>Welcome, {user.username}</p>
+          <p>Welcome, {username}</p>
           <Button
             variant="outlined"
             onClick={handleSignOut}
