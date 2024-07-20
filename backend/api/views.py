@@ -19,17 +19,20 @@ def execute(query, username='postgres', password='1234'):
         conn.commit()
         return result
 
+
 def get_course_id(subject_code, catalog_number):
     query = f"""
     SELECT course_id FROM Course
-    WHERE subject_code = {subject_code} AND catalog_number = {catalog_number}
+    WHERE subject_code = '{subject_code}' AND catalog_number = '{catalog_number}'
     """
-    
+
     result = execute(query)
     if not result:
-        return Response({'message': 'Course not found'}, 404)
-    
-    return result[0][0] 
+        return '000000'
+
+    for row in result:
+        return row[0]
+
 
 @api_view(['GET'])
 def hello_world(request):
@@ -39,7 +42,7 @@ def hello_world(request):
 # ========================================
 # View All Courses
 # ========================================
-# TO DO:(jade) 
+# TO DO:(jade)
 #   - Filter by department, etc
 #   - Order based on filter
 #   - Send list of lists instead of list of strings
@@ -63,22 +66,26 @@ def get_all_courses(request):
 # DONE:(jade)
 #   - Delete course from user
 #   - Update course for user
-#   - right now we are using subjct_code+catalog_number as the course_id. 
+#   - right now we are using subjct_code+catalog_number as the course_id.
 #     we need to make sure we are using the actual course_id.
 #     Look at View Student Course History for reference (at the very bottom)
 
-@api_view(['GET']) 
+@api_view(['GET'])
 def get_user_course(request):
     username = unquote(request.GET.get('username', ''))
 
-    result = execute(f"SELECT * FROM CurrentSchedule WHERE username = '{username}'")
-    
+    query = f"""
+    SELECT c.subject_code, c.catalog_number
+    FROM CurrentSchedule cs
+    JOIN Course c ON cs.course_id = c.course_id
+    WHERE cs.username = '{username}'
+    """
+
+    result = execute(query)
+
     courses = []
     for row in result:
-        course = []
-        for i in row:
-            course.append(row[i])
-        courses.append(course)
+        courses.append(' '.join(map(str, row)))
 
     return Response({'message': courses})
 
@@ -93,10 +100,10 @@ def put_user_course(request):
 
     course_id = get_course_id(subject_code, catalog_number)
 
-    # Insert the course_id into CoursesTaken
+    # Insert the course_id into CurrentSchedule
     insert_query = f"""
     INSERT INTO CurrentSchedule (username, course_id)
-    VALUES ({username}, {course_id})
+    VALUES ('{username}', '{course_id}')
     """
 
     execute(insert_query)
@@ -129,25 +136,25 @@ def update_user_course(request):
 
     return Response({'message': 200})
 
+
 @api_view(['PUT'])
 def delete_user_course(request):
     request_json = json.loads(request.body)
 
-    subject_code = request_json['data']['subject_code']
-    catalog_number = request_json['data']['catalog_number']
+    subject_code = request_json['subject_code']
+    catalog_number = request_json['catalog_number']
 
     username = request_json['username']
 
-    query = f"""
-        DELETE ct
-        FROM CurrentSchedule ct
-        JOIN Course c ON ct.course_id = c.course_id
-        WHERE ct.username = '{username}' 
-        AND c.subject_code = '{subject_code}' 
-        AND c.catalog_number = '{catalog_number}'
-        """
+    course_id = get_course_id(subject_code, catalog_number)
 
-    execute(query, username)
+    # Update the CurrentSchedule with the new course_id
+    query = f"""
+    DELETE FROM CurrentSchedule
+    WHERE course_id = '{course_id}' and username = '{username}';
+    """
+
+    execute(query)
 
     return Response({'message': 200})
 
@@ -158,14 +165,20 @@ def delete_user_course(request):
 #   - Differentiate between student and professor DONE
 #   - Add user info to corresponding table when they sign up DONE
 
+
 @api_view(['GET'])
 def login_user(request):
-    request_json = json.loads(request.body)
-    username = request_json['username']
-    password = request_json['password']
+    print(request.GET)
+    username = unquote(request.GET.get('username', ''))
+    password = unquote(request.GET.get('password', ''))
+
+    # request_json = json.loads(request.body)
+    # username = request_json['username']
+    # password = request_json['password']
 
     # If username and password match, log in
-    result = execute(f"SELECT * FROM LoginCredentials WHERE username = '{username}' AND student_password = '{password}'")
+    result = execute(
+        f"SELECT * FROM LoginCredentials WHERE username = '{username}' AND pass = '{password}'")
     if result.rowcount is not 0:
         # Check if student or professor
         result = execute(f"SELECT * FROM Prof WHERE username = '{username}'")
@@ -173,10 +186,11 @@ def login_user(request):
             return Response({'message': 'professor'}, 200)
         return Response({'message': 'student'}, 200)
 
-    result = execute(f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
+    result = execute(
+        f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
     if result.rowcount is not 0:
         return Response({'message': 'incorrect_password'}, 404)
-    
+
     # Else, offer user to create an account
     else:
         return Response({'message': 'no_acct'}, 404)
@@ -190,19 +204,21 @@ def signup_user(request):
     is_prof = request_json['is_prof']
 
     # If username matches, the username already exists
-    result = execute(f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
+    result = execute(
+        f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
     if result.rowcount is not 0:
         return Response({'message': 'username_exists'}, 404)
 
     # Else, sign up
-    result = execute(f"INSERT INTO LoginCredentials (username, student_password) VALUES ('{username}', '{password}');")
+    result = execute(
+        f"INSERT INTO LoginCredentials (username, pass) VALUES ('{username}', '{password}');")
 
     if is_prof:
-        result = execute(f"INSERT INTO Prof (username) VALUES ('{username}');") 
-    else:
-        result = execute(f"INSERT INTO Student (username) VALUES ('{username}');")
+        result = execute(f"INSERT INTO Prof (username) VALUES ('{username}');")
+        return Response({'message': 'professor'}, 200)
 
-    return Response({'message': 'signup_success'}, 200)
+    result = execute(f"INSERT INTO Student (username) VALUES ('{username}');")
+    return Response({'message': 'student'}, 200)
 
 
 # ========================================
@@ -226,14 +242,14 @@ def get_user_course_taken(request):
     username = unquote(request.GET.get('username', ''))
 
     query = f"""
-    SELECT c.subject_code, c.catalog_number 
+    SELECT c.subject_code, c.catalog_number
     FROM CoursesTaken ct
     JOIN Course c ON ct.course_id = c.course_id
-    WHERE ct.username = {username}
+    WHERE ct.username = '{username}'
     """
 
-    result = execute(query, username)
-    
+    result = execute(query)
+
     courses = []
     for row in result:
         courses.append(' '.join(map(str, row)))
@@ -261,6 +277,7 @@ def put_user_course_taken(request):
 
     return Response({'message': 200})
 
+
 @api_view(['PUT'])
 def update_user_course_taken(request):
     request_json = json.loads(request.body)
@@ -286,24 +303,58 @@ def update_user_course_taken(request):
 
     return Response({'message': 200})
 
+
 @api_view(['PUT'])
 def delete_user_course_taken(request):
     request_json = json.loads(request.body)
 
-    subject_code = request_json['data']['subject_code']
-    catalog_number = request_json['data']['catalog_number']
+    subject_code = request_json['subject_code']
+    catalog_number = request_json['catalog_number']
 
     username = request_json['username']
 
-    query = f"""
-        DELETE ct
-        FROM CoursesTaken ct
-        JOIN Course c ON ct.course_id = c.course_id
-        WHERE ct.username = '{username}' 
-        AND c.subject_code = '{subject_code}' 
-        AND c.catalog_number = '{catalog_number}'
-        """
+    course_id = get_course_id(subject_code, catalog_number)
 
-    execute(query, username)
+    query = f"""
+    DELETE FROM CurrentSchedule
+    WHERE course_id = '{course_id}' and username = '{username}';
+    """
+
+    execute(query)
 
     return Response({'message': 200})
+
+# ========================================
+# Get Subject Code and Catalog Number List
+# ========================================
+# TO DO:
+#   -
+
+
+@api_view(['GET'])
+def get_subject_codes(request):
+    result = execute("SELECT DISTINCT subject_code FROM Course;")
+    subject_codes = []
+    for row in result:
+        subject_codes.append(row[0])
+    return Response({'message': subject_codes})
+
+
+@api_view(['GET'])
+def get_catalog_numbers(request):
+    subject_code = unquote(request.GET.get('subject_code', ''))
+    result = execute(
+        f"SELECT catalog_number FROM Course WHERE subject_code = '{subject_code}';")
+    catalog_numbers = []
+    for row in result:
+        catalog_numbers.append(row[0])
+    return Response({'message': catalog_numbers})
+
+
+# ========================================
+# Professor
+# ========================================
+# TO DO:
+#   - adding course to courseteaching table
+#   - deleting course to courseteaching table
+#   - viewing student usernames of courses taught by a professor
