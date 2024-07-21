@@ -84,17 +84,17 @@ CREATE TABLE IF NOT EXISTS LoginCredentials (
 --     FOREIGN KEY (course_id, section_id, term) REFERENCES (course_id, section_id, term)
 -- );
 
--- CREATE TABLE Section (
---     course_id INT NOT NULL REFERENCES Course(course_id),
---     section_number INT NOT NULL,
---     section_id INT NOT NULL,
---     term INT NOT NULL,
---     start_time TIME NOT NULL,
---     end_time TIME NOT NULL,
---     weekdays VARCHAR(10) -- M,T,W,Th,F,Sa,Su
---     component_type VARCHAR(3),
---     currently_enrolled INT NOT NULL,
---     total_cap_size INT NOT NULL,
---     PRIMARY(course_id, section_id, term),
---     Location VARCHAR(50),
--- );
+CREATE TABLE Section (
+    course_id INT NOT NULL REFERENCES Course(course_id),
+    section_number INT NOT NULL,
+    section_id INT NOT NULL,
+    term INT NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    weekdays VARCHAR(10) -- M,T,W,Th,F,Sa,Su
+    component_type VARCHAR(3),
+    currently_enrolled INT NOT NULL,
+    total_cap_size INT NOT NULL,
+    PRIMARY(course_id, section_id, term),
+    location VARCHAR(50),
+);

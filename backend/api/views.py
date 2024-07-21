@@ -411,9 +411,9 @@ def put_professor_course_taught(request):
 
     course_id = get_course_id(subject_code, catalog_number)
 
-    # Insert the course_id into CoursesTaugt
+    # Insert the course_id into CoursesTaught
     insert_query = f"""
-    INSERT INTO CoursesTaugt (username, course_id)
+    INSERT INTO CoursesTaught (username, course_id)
     VALUES ({username}, {course_id})
     """
 
