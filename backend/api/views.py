@@ -42,10 +42,8 @@ def hello_world(request):
 # ========================================
 # View All Courses
 # ========================================
-# TO DO:(jade)
-#   - Filter by department, etc
-#   - Order based on filter
-#   - Send list of lists instead of list of strings
+# TO DO:
+#   - Send list of lists instead of list of strings (DONE)
 
 @api_view(['GET'])
 def get_all_courses(request):
@@ -473,3 +471,20 @@ def get_students_for_professor(request):
         name, subject, course, term_code, grade, credit) in result]
 
     return Response({'message': combined_data})
+
+
+# ========================================
+# View All Sections
+# ========================================
+
+@api_view(['GET'])
+def get_all_sections(request):
+    result = execute("SELECT * FROM Section")
+    sections = []
+    for row in result:
+        section_elts = []
+        for element in row:
+            section_elts.append(element)
+        sections.append(section_elts)
+
+    return Response({'message': sections})
