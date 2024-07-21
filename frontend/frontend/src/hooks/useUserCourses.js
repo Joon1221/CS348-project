@@ -20,7 +20,7 @@ const useUserCourses = (username) => {
 
   const getAllCourses = () => {
     axios
-      .get("http://localhost:8000/api/get_subject_codes/")
+      .get("http://localhost:8000/api/get_all_courses/")
       .then((response) => {
         setCourses(response.data.message);
       })
