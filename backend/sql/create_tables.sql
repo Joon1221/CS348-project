@@ -95,6 +95,6 @@ CREATE TABLE Section (
     component_type VARCHAR(3),
     currently_enrolled INT NOT NULL,
     total_cap_size INT NOT NULL,
-    PRIMARY(course_id, section_id, term),
     location VARCHAR(50),
+    PRIMARY(course_id, section_id, term),
 );
