@@ -231,8 +231,8 @@ def update_password(request):
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
     if result.rowcount is not 0:
-        result = execute(f"UPDATE LoginCredentials
-                SET password='{new_password}' WHERE username= '{username}'")
+        result = execute(
+            f"UPDATE LoginCredentials SET password='{new_password}' WHERE username= '{username}'")
         return Response({'message': 'updated_password'}, 200)
 
         # Else, return error that user doesnt have an account
@@ -463,7 +463,6 @@ def get_students_for_professor(request):
     JOIN Course c ON ctk.course_id = c.course_id
     WHERE ct.username = '{username}'
     """
-
 
     courses_taken_result = execute(courses_taken_query)
     current_schedule_result = execute(current_schedule_query)
