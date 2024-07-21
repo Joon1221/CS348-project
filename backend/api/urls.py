@@ -20,4 +20,12 @@ urlpatterns = [
          name='get_subject_codes'),
     path('get_catalog_numbers/', views.get_catalog_numbers,
          name='get_catalog_numbers'),
+    path('get_professor_course_taught/', views.get_professor_course_taught,
+         name='get_professor_course_taught'),
+    path('put_professor_course_taught/', views.put_professor_course_taught,
+         name='put_professor_course_taught'),
+    path('delete_professor_course_taught/', views.delete_professor_course_taught,
+         name='delete_professor_course_taught'),
+    path('get_students_for_professor/', views.get_students_for_professor,
+         name='get_students_for_professor'),
 ]

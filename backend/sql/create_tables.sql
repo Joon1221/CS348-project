@@ -18,6 +18,13 @@ CREATE TABLE IF NOT EXISTS Student (
     -- acad_level VARCHAR(3) -- might be NULL if student is going into first year? idk
 );
 
+CREATE TABLE IF NOT EXISTS CoursesTaught (
+    username VARCHAR(8) NOT NULL,
+    course_id VARCHAR(10) NOT NULL,
+    PRIMARY KEY (username, course_id)
+    -- FOREIGN KEY (course_id) REFERENCES Course(course_id)
+);
+
 CREATE TABLE IF NOT EXISTS CurrentSchedule (
     username VARCHAR(12) NOT NULL,
     -- course_id INT NOT NULL,
