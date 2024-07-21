@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import Edit from "@mui/icons-material/Edit";
@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import EditStudent from "./EditStudent";
+import { getStudentsTaught } from "../../hooks/useProfCourses";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -43,16 +44,10 @@ const columns = [
   { field: "course", headerName: "Course", width: 130 },
   { field: "termCode", headerName: "TermCode", width: 130 },
   { field: "grade", headerName: "Grade", width: 130 },
+  { field: "credit", headerName: "Credit", width: 130 },
 ];
 
-// MOCK DATA
-const rows = [
-  { id: 1, username: "Snow", course: "Jon", termCode: 2024, grade: 89 },
-  { id: 2, username: "Lannister", course: "Cersei", termCode: 2020, grade: 74 },
-  { id: 3, username: "Lannister", course: "Jaime", termCode: 2009, grade: 45 },
-];
-
-export default function ProfStudInfo() {
+export default function ProfStudInfo({ username }) {
   // const [selectedStudent, setSelectedStudent] = useState({});
   // const [isEditing, setIsEditing] = useState(false);
 
@@ -60,6 +55,34 @@ export default function ProfStudInfo() {
   //   setSelectedStudent(studentInfo);
   //   setIsEditing(true);
   // };
+
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const result = await getStudentsTaught({ username });
+        console.log(result);
+        setStudents(result);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchStudent();
+  }, []);
+
+  const transformedStudentsTaught = useMemo(
+    () =>
+      students.map((student, index) => ({
+        id: index,
+        username: student[0],
+        course: student[1],
+        termCode: student[2],
+        grade: student[3],
+        credit: student[4],
+      })),
+    [students]
+  );
 
   return (
     <>
@@ -71,7 +94,7 @@ export default function ProfStudInfo() {
         <DataGrid
           checkboxSelection={false}
           disableMultipleRowSelection
-          rows={rows}
+          rows={transformedStudentsTaught}
           columns={columns}
           initialState={{
             pagination: {

@@ -48,7 +48,7 @@ export default function ProfTabs({ user }) {
         <Tab label="Profile" />
       </Tabs>
       <TabPanel>
-        {selectedTab === 0 && <ProfStudInfo />}
+        {selectedTab === 0 && <ProfStudInfo username={user?.username} />}
         {selectedTab === 1 && (
           <ManageCoursesTaught
             profCoursesTaught={profCoursesTaught}

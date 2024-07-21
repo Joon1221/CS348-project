@@ -62,3 +62,19 @@ const useProfCourse = (username) => {
 };
 
 export default useProfCourse;
+
+export const getStudentsTaught = async (username) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/api/get_students_for_professor/",
+      {
+        params: {
+          username: username.username,
+        },
+      }
+    );
+    return response.data.message;
+  } catch (error) {
+    console.error(`Get all student taught error:${error}`);
+  }
+};
