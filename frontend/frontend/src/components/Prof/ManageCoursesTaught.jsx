@@ -25,7 +25,6 @@ const ContentContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  //background-color: darksalmon;
 `;
 
 const AddCourseContainer = styled.div`
@@ -34,16 +33,13 @@ const AddCourseContainer = styled.div`
   width: 100%;
   justify-content: space-between;
   padding-bottom: 2rem;
-  //background-color: #e1ffa0;
 `;
 
-// TODO: MOCK DATA
-const rows = [
-  { id: 1, course: "CS 348" },
-  { id: 2, course: "MATH 115" },
-];
-
-export default function ManageCoursesTaught() {
+export default function ManageCoursesTaught({
+  profCoursesTaught,
+  addProfCourseTaught,
+  deleteProfCourseTaught,
+}) {
   const [subjectCode, setSubjectCode] = useState(""); // eg. CS
   const [catalogNum, setCatalogNum] = useState(""); // 348
   const [departments, setDepartments] = useState([]);
@@ -51,18 +47,23 @@ export default function ManageCoursesTaught() {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [open, setOpen] = useState(false);
 
-  // TODO: On add, the changes should be reflexted immediately
+  const transformedCourses = profCoursesTaught.map((course, index) => ({
+    id: index,
+    course,
+  }));
+
   const handleAddCourse = () => {
-    //addUserCourse({ subject_code: subjectCode, catalog_number: catalogNum });
-    console.log("To add course taught");
+    addProfCourseTaught({
+      subject_code: subjectCode,
+      catalog_number: catalogNum,
+    });
   };
 
-  // TODO: On delete, the changes should be reflexted immediately
   const handleDelete = () => {
     const subject_code = selectedCourse.split(" ")[0];
     const catalog_number = selectedCourse.split(" ")[1];
     console.log("To delete course taught", subject_code, catalog_number);
-    // deleteUserCourse({ subject_code, catalog_number });
+    deleteProfCourseTaught({ subject_code, catalog_number });
   };
 
   useEffect(() => {
@@ -99,8 +100,9 @@ export default function ManageCoursesTaught() {
             renderInput={(params) => (
               <TextField {...params} label="Subject Code" />
             )}
-            onChange={(event, newValue) => setSubjectCode(newValue || "")}
-            isOptionEqualToValue={(option, value) => option === value}
+            onChange={(event, newValue) => {
+              setSubjectCode(newValue);
+            }}
             onInputChange={(event, value, reason) => {
               if (reason === "clear") {
                 setCatalogNum("");
@@ -116,8 +118,7 @@ export default function ManageCoursesTaught() {
             renderInput={(params) => (
               <TextField {...params} label="Catalog Number" />
             )}
-            onChange={(event, newValue) => setCatalogNum(newValue || "")}
-            isOptionEqualToValue={(option, value) => option === value}
+            onChange={(event, newValue) => setCatalogNum(newValue)}
           />
           <Button
             variant="outlined"
@@ -128,7 +129,7 @@ export default function ManageCoursesTaught() {
           </Button>
         </AddCourseContainer>
         <Table
-          rows={rows}
+          rows={transformedCourses}
           setSelectedCourse={setSelectedCourse}
           setOpen={setOpen}
         />

@@ -39,60 +39,17 @@ const MatEdit = () => {
 
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
-  { field: "firstName", headerName: "First name", width: 130 },
-  { field: "lastName", headerName: "Last name", width: 130 },
-  {
-    field: "grade",
-    headerName: "Grade",
-    type: "number",
-    width: 50,
-  },
-  {
-    field: "year",
-    headerName: "Year",
-    type: "Date",
-    width: 100,
-  },
-  // {
-  //   field: 'fullName',
-  //   headerName: 'Full name',
-  //   description: 'This column has a value getter and is not sortable.',
-  //   sortable: false,
-  //   width: 160,
-  //   valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  // },
-  // {
-  //   field: "edit",
-  //   headerName: "Edit",
-  //   sortable: false,
-  //   width: 140,
-  //   renderCell: (params) => {
-  //     return (
-  //       <div style={{ cursor: "pointer" }}>
-  //         <MatEdit index={params.row.id} />
-  //       </div>
-  //     );
-  //   },
-  // },
+  { field: "username", headerName: "Username", width: 130 },
+  { field: "course", headerName: "Course", width: 130 },
+  { field: "termCode", headerName: "TermCode", width: 130 },
+  { field: "grade", headerName: "Grade", width: 130 },
 ];
 
 // MOCK DATA
 const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", year: 2024, grade: 88 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", year: 2020, grade: 74 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", year: 2009, grade: 45 },
-  { id: 4, lastName: "Stark", firstName: "Arya", year: 2021, grade: 65 },
-  {
-    id: 5,
-    lastName: "Targaryen",
-    firstName: "Daenerys",
-    year: 2019,
-    grade: 89,
-  },
-  { id: 6, lastName: "Melisandre", firstName: "Kane", year: 2017, grade: 100 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", year: 2024, grade: 82 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", year: 2019, grade: 92 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", year: 2015, grade: 86 },
+  { id: 1, username: "Snow", course: "Jon", termCode: 2024, grade: 89 },
+  { id: 2, username: "Lannister", course: "Cersei", termCode: 2020, grade: 74 },
+  { id: 3, username: "Lannister", course: "Jaime", termCode: 2009, grade: 45 },
 ];
 
 export default function ProfStudInfo() {

@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import ProfStudInfo from "./ProfStudInfo";
 import Profile from "../Shared/Profile";
 import ManageCoursesTaught from "./ManageCoursesTaught";
+import useProfCourse from "../../hooks/useProfCourses";
 
 const TabContainer = styled.div`
   display: flex;
@@ -19,7 +20,9 @@ const TabPanel = styled.div`
   padding: 2rem;
 `;
 
-export default function ProfTabs() {
+export default function ProfTabs({ user }) {
+  const { profCoursesTaught, addProfCourseTaught, deleteProfCourseTaught } =
+    useProfCourse(user?.username);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleTabChange = (_, newValue) => {
@@ -46,8 +49,14 @@ export default function ProfTabs() {
       </Tabs>
       <TabPanel>
         {selectedTab === 0 && <ProfStudInfo />}
-        {selectedTab === 1 && <ManageCoursesTaught />}
-        {selectedTab === 2 && <Profile />}
+        {selectedTab === 1 && (
+          <ManageCoursesTaught
+            profCoursesTaught={profCoursesTaught}
+            addProfCourseTaught={addProfCourseTaught}
+            deleteProfCourseTaught={deleteProfCourseTaught}
+          />
+        )}
+        {selectedTab === 2 && <Profile user={user} />}
       </TabPanel>
     </TabContainer>
   );

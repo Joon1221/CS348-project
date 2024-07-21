@@ -235,10 +235,6 @@ def update_password(request):
             f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= '{username}'")
         return Response({'message': 'updated_password'}, 200)
 
-        # Else, return error that user doesnt have an account
-    else:
-        return Response({'message': 'username_doesnt_exists'}, 404)
-
 
 # ========================================
 # View Class/Section List
@@ -457,7 +453,7 @@ def get_students_for_professor(request):
     """
 
     current_schedule_query = f"""
-    SELECT DISTINCT s.username, c.subject_code, c.catalog_number
+        SELECT DISTINCT s.username, c.subject_code, c.catalog_number
     FROM CoursesTaught ct
     JOIN CurrentSchedule cs ON ct.course_id = cs.course_id
     JOIN Student s ON cs.username = s.username
@@ -469,9 +465,11 @@ def get_students_for_professor(request):
     current_schedule_result = execute(current_schedule_query)
 
     result1 = [tuple(row) for row in courses_taken_result]
-    result2 = [tuple(row) + ('S24', 0, 0.0,) for row in current_schedule_result]
+    result2 = [tuple(row) + ('S24', 0, 0.0,)
+               for row in current_schedule_result]
     result = result1+result2
 
-    combined_data = [(name, f"{subject} {course}", term_code, grade, credit) for (name, subject, course, term_code, grade, credit) in result]
+    combined_data = [(name, f"{subject} {course}", term_code, grade, credit) for (
+        name, subject, course, term_code, grade, credit) in result]
 
     return Response({'message': combined_data})
