@@ -225,18 +225,19 @@ def signup_user(request):
 def update_password(request):
     request_json = json.loads(request.body)
     username = request_json['username']
+    new_password = request_json['new_password']
 
     # If username matches, allow user to write new password
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
     if result.rowcount is not 0:
+        result = execute(f"UPDATE LoginCredentials
+                SET password='{new_password}' WHERE username= '{username}'")
+        return Response({'message': 'updated_password'}, 200)
 
         # Else, return error that user doesnt have an account
-        # result = execute(
+    else:
         return Response({'message': 'username_doesnt_exists'}, 404)
-
-    result = execute(f"INSERT INTO Student (username) VALUES ('{username}');")
-    return Response({'message': 'student'}, 200)
 
 
 # ========================================
@@ -260,7 +261,7 @@ def get_user_course_taken(request):
     username = unquote(request.GET.get('username', ''))
 
     query = f"""
-    SELECT c.subject_code, c.catalog_number
+    SELECT c.subject_code, c.catalog_number, ct.term_code, ct.grade, ct.credit
     FROM CoursesTaken ct
     JOIN Course c ON ct.course_id = c.course_id
     WHERE ct.username = '{username}'
@@ -279,15 +280,18 @@ def get_user_course_taken(request):
 def put_user_course_taken(request):
     request_json = json.loads(request.body)
 
+    username = request_json['username']
     subject_code = request_json['subject_code']
     catalog_number = request_json['catalog_number']
-    username = request_json['username']
+    term_code = request_json['term_code']
+    grade = request_json['grade']
+    credit = request_json['credit']
 
     course_id = get_course_id(subject_code, catalog_number)
 
     # Insert the course_id into CoursesTaken
     insert_query = f"""
-    INSERT INTO CoursesTaken (username, course_id)
+    INSERT INTO CoursesTaken (username, course_id, term_code, grade, credit)
     VALUES ({username}, {course_id})
     """
 
@@ -377,12 +381,13 @@ def get_catalog_numbers(request):
 #   - deleting course to courseteaching table
 #   - viewing student usernames of courses taught by a professor
 
+@ api_view(['GET'])
 def get_professor_course_taught(request):
     username = unquote(request.GET.get('username', ''))
 
     query = f"""
     SELECT c.subject_code, c.catalog_number
-    FROM CoursesTaugt ct
+    FROM CoursesTaught ct
     JOIN Course c ON ct.course_id = c.course_id
     WHERE ct.username = '{username}'
     """
@@ -442,24 +447,27 @@ def delete_professor_course_taught(request):
 def get_students_for_professor(request):
     username = unquote(request.GET.get('username', ''))
 
-    query = f"""
+    courses_taken_query = f"""
     SELECT DISTINCT s.username, c.subject_code, c.catalog_number
     FROM CoursesTaught ct
     JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Student s ON ctk.username = s.username
     JOIN Course c ON ctk.course_id = c.course_id
     WHERE ct.username = '{username}'
-    UNION
-    SELECT DISTINCT s.username, c.subject_code, c.catalog_number
-    FROM CurrentSchedule cs
-    JOIN CoursesTaken ctk ON cs.course_id = ctk.course_id
+    """
+
+    current_schedule_query = f""" SELECT DISTINCT s.username, c.subject_code, c.catalog_number
+    FROM CoursesTaught ct
+    JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Student s ON ctk.username = s.username
     JOIN Course c ON ctk.course_id = c.course_id
     WHERE ct.username = '{username}'
     """
 
-    result = execute(query)
 
-    students = [row[0] for row in result]
+    courses_taken_result = execute(courses_taken_query)
+    current_schedule_result = execute(current_schedule_query)
+
+    students = [row[0] for row in courses_taken_result]
 
     return Response({'message': students})

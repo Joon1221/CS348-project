@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS CurrentSchedule (
 CREATE TABLE IF NOT EXISTS CoursesTaken (
     username VARCHAR(8) NOT NULL,
     course_id VARCHAR(10) NOT NULL,
+    term_code VARCHAR(4) NOT NULL,
+    grade INT NOT NULL,
+    credit FLOAT NOT NULL,
     PRIMARY KEY (username, course_id)
     -- FOREIGN KEY (course_id) REFERENCES Course(course_id)
 );
