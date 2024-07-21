@@ -21,11 +21,16 @@ def execute(query, username='postgres', password='1234'):
         return result
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    # Need to add support for return_result and query without filename
-    parser.add_argument("-f", dest="filename", required=True)
-    arguments = parser.parse_args()
-    results = execute_file(arguments.filename)
-    print(results)
-    for row in results:
-        print(row)
+    # parser = argparse.ArgumentParser()
+    # # Need to add support for return_result and query without filename
+    # parser.add_argument("-f", dest="filename", required=True)
+    # arguments = parser.parse_args()
+    # results = execute_file(arguments.filename)
+    # print(results)
+    # for row in results:
+    #     print(row)
+
+    insert_query = f"""
+    INSERT INTO CurrentSchedule (username, course_id)
+    VALUES ('{username}', '{course_id}')
+    """

@@ -3,4 +3,5 @@
 -- DROP TABLE LoginCredentials CASCADE;
 -- DROP TABLE Prof CASCADE;
 -- DROP TABLE Student CASCADE;
-DROP TABLE CoursesTaken CASCADE;
+-- DROP TABLE CoursesTaken CASCADE;
+DROP TABLE Section CASCADE;
