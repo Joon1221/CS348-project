@@ -10,6 +10,8 @@ urlpatterns = [
          name='delete_user_course'),
     path('login_user/', views.login_user, name='login_user'),
     path('signup_user/', views.signup_user, name='signup_user'),
+    path('update_password/', views.update_password,
+         name='update_password'),
     path('get_user_course_taken/', views.get_user_course_taken,
          name='get_user_course_taken'),
     path('put_user_course_taken/', views.put_user_course_taken,

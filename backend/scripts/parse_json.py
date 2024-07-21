@@ -9,3 +9,13 @@ def get_courses():
   r = requests.get(f'https://openapi.data.uwaterloo.ca/v3/Courses/1245/', headers=headers)
   course = r.json()
   return course
+
+def get_course_ids():
+  r = requests.get(f'https://openapi.data.uwaterloo.ca/v3/ClassSchedules/1245/', headers=headers)
+  course = r.json()
+  return course
+
+def get_sections(course):
+  r = requests.get(f'https://openapi.data.uwaterloo.ca/v3/ClassSchedules/1245/{course}/', headers=headers)
+  course = r.json()
+  return course

@@ -49,7 +49,7 @@ def hello_world(request):
 
 @api_view(['GET'])
 def get_all_courses(request):
-    result = execute("SELECT * FROM Course LIMIT 10")
+    result = execute("SELECT * FROM Course")
     courses = []
     for row in result:
         course = []
@@ -232,7 +232,7 @@ def update_password(request):
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
     if result.rowcount is not 0:
         result = execute(
-            f"UPDATE LoginCredentials SET password='{new_password}' WHERE username= '{username}'")
+            f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= '{username}'")
         return Response({'message': 'updated_password'}, 200)
 
         # Else, return error that user doesnt have an account
@@ -468,6 +468,10 @@ def get_students_for_professor(request):
     courses_taken_result = execute(courses_taken_query)
     current_schedule_result = execute(current_schedule_query)
 
-    students = [row[0] for row in courses_taken_result]
+    result1 = [tuple(row) for row in courses_taken_result]
+    result2 = [tuple(row) + ('S24', 0, 0.0,) for row in current_schedule_result]
+    result = result1+result2
 
-    return Response({'message': students})
+    combined_data = [(name, f"{subject} {course}", term_code, grade, credit) for (name, subject, course, term_code, grade, credit) in result]
+
+    return Response({'message': combined_data})
