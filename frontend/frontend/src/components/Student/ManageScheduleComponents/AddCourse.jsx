@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { TextField, Autocomplete } from "@mui/material";
 import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { getAllDept } from "../../../hooks/useUserCourses";
-import { getAllDeptCourseCode } from "../../../hooks/useUserCourses";
+import { getAllDept } from "../../../hooks/getDeptInfo";
+import { getAllDeptCourseCode } from "../../../hooks/getDeptInfo";
 
 const MainContainer = styled.div`
   width: 100%;

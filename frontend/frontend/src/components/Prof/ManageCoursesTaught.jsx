@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TextField, Autocomplete, Button } from "@mui/material";
-import { getAllDept } from "../../hooks/useUserCourses";
-import { getAllDeptCourseCode } from "../../hooks/useUserCourses";
+import { getAllDept } from "../../hooks/getDeptInfo";
+import { getAllDeptCourseCode } from "../../hooks/getDeptInfo";
 import DeleteModal from "../Shared/DeleteModal";
 import Table from "../Shared/Table";
 
@@ -51,16 +51,17 @@ export default function ManageCoursesTaught() {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [open, setOpen] = useState(false);
 
+  // TODO: On add, the changes should be reflexted immediately
   const handleAddCourse = () => {
     //addUserCourse({ subject_code: subjectCode, catalog_number: catalogNum });
     console.log("To add course taught");
   };
 
-  //TODO:
+  // TODO: On delete, the changes should be reflexted immediately
   const handleDelete = () => {
     const subject_code = selectedCourse.split(" ")[0];
     const catalog_number = selectedCourse.split(" ")[1];
-    console.log("To delete course taught");
+    console.log("To delete course taught", subject_code, catalog_number);
     // deleteUserCourse({ subject_code, catalog_number });
   };
 
