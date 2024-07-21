@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 // Create the UserContext
 export const UserContext = createContext();
@@ -7,7 +7,8 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({
     username: "",
-    isProf: false
+    password: "",
+    isProf: false,
   });
 
   const signOut = () => {

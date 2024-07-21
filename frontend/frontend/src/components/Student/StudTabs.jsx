@@ -70,7 +70,7 @@ export default function StudTabs({ user }) {
         )}
         {selectedTab === 2 && <CoursesTaken />}
         {selectedTab === 3 && <SectionList />}
-        {selectedTab === 4 && <Profile username={user.username} />}
+        {selectedTab === 4 && <Profile user={user} />}
       </TabPanel>
     </TabContainer>
   );

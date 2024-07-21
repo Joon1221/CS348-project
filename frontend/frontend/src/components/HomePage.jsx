@@ -23,10 +23,10 @@ const Header = styled.div`
 `;
 
 const HeaderEnd = styled.div`
-display: flex;
-width: 15%;
-flex-direction: row;
-justify-content: space-between;
+  display: flex;
+  width: 15%;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const Title = styled.h1`
@@ -59,7 +59,7 @@ export default function HomePage() {
           </Button>
         </HeaderEnd>
       </Header>
-      {isProf && <ProfTabs />}
+      {isProf && <ProfTabs user={user} />}
       {!isProf && <StudTabs user={user} />}
     </MainContainer>
   );

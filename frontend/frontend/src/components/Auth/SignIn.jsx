@@ -57,7 +57,7 @@ export default function SignIn() {
       })
       .then((response) => {
         const isProf = response.data.message == "student" ? false : true;
-        setUser({ username, isProf });
+        setUser({ username, password, isProf });
         navigate("/home");
       })
       .catch((error) => {

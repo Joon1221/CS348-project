@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import {
   Button,
   FormControl,
@@ -35,20 +36,50 @@ const ButtonContainer = styled.div`
   flex-direction: row;
 `;
 
-export default function Profile({ username }) {
-  const [password, setPassword] = useState("password");
+const updatePassword = async ({ username, password }) => {
+  try {
+    const response = await axios.put(
+      "http://localhost:8000/api/update_password/",
+      {
+        username: username,
+        new_password: password,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export default function Profile({ user }) {
+  const username = user?.username;
+  const password = user.password;
+  const [newPassword, setNewPassword] = useState(password);
   const [showPassword, setShowPassword] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isPassSuccess, setIsPassSucc] = useState(false);
+
+  const handlePasswordChange = async () => {
+    setIsDisabled(true);
+    try {
+      updatePassword({
+        username,
+        password: newPassword,
+      });
+      setIsPassSucc(true);
+    } catch (error) {
+      setIsPassSucc(false);
+    }
+  };
 
   return (
     <MainContainer>
       <h1>Profile</h1>
-      <h3>Username: {username}</h3>
+      <h3>Username: {user.username}</h3>
       <PasswordContainer>
         <h3>Password: </h3>
         <FormControl style={{ marginTop: "12px" }}>
           <Input
-            id="outlined-adornment-password"
             type={showPassword ? "text" : "password"}
             disabled={isDisabled}
             endAdornment={
@@ -63,15 +94,17 @@ export default function Profile({ username }) {
                 </IconButton>
               </InputAdornment>
             }
-            value={password}
+            value={newPassword}
             placeholder="Enter password"
             label="Password"
             onChange={(e) => {
-              setPassword(e.target.value);
+              setNewPassword(e.target.value);
+              setIsPassSucc(false);
             }}
           />
         </FormControl>
       </PasswordContainer>
+      {isPassSuccess && <p>Password succesfully updated</p>}
       <ButtonContainer>
         {isDisabled ? (
           <Button
@@ -79,6 +112,7 @@ export default function Profile({ username }) {
             style={{ width: 150 }}
             onClick={() => {
               setIsDisabled(false);
+              setIsPassSucc(false);
             }}
             startIcon={<EditIcon />}
           >
@@ -90,6 +124,8 @@ export default function Profile({ username }) {
             style={{ width: 150 }}
             onClick={() => {
               setIsDisabled(true);
+              setNewPassword(password);
+              setIsPassSucc(false);
             }}
           >
             Cancel
@@ -99,10 +135,7 @@ export default function Profile({ username }) {
           <Button
             variant="contained"
             style={{ width: 150 }}
-            onClick={() => {
-              setIsDisabled(true);
-              setPassword(password);
-            }}
+            onClick={handlePasswordChange}
           >
             Save Changes
           </Button>

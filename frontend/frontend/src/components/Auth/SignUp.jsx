@@ -65,10 +65,9 @@ export default function SignUp() {
     const isProf = role === 0 ? false : true;
     try {
       await createUser({ username, password, isProf });
-      setUser({ username, isProf });
+      setUser({ username, password, isProf });
       navigate("/home");
     } catch (error) {
-      // console.log("Error creating user:", error.message);
       setIsInvalid({
         errorMsg:
           error.message === "username_exists"
