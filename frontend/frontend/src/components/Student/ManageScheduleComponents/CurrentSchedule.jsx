@@ -43,7 +43,7 @@ export default function CurrentSchedule({ userCourses, setView }) {
           },
         }}
         pageSizeOptions={[5, 10]}
-        style={{ height: "85%" }}
+        style={{ height: "85%", width: "85%" }}
         checkboxSelection={false}
       />
     </MainContainer>

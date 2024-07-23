@@ -19,7 +19,7 @@ export default function Table({ rows, setSelectedCourse, setOpen }) {
       pageSizeOptions={[5, 10]}
       checkboxSelection={false}
       disableMultipleRowSelection
-      style={{ height: "85%" }}
+      style={{ height: "85%", width: "100%" }}
     />
   );
 }

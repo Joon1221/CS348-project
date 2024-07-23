@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import ProfStudInfo from "./ProfStudInfo";
 import Profile from "../Shared/Profile";
 import ManageCoursesTaught from "./ManageCoursesTaught";
+import StudentsTaught from "./StudentsTaught";
 import useProfCourse from "../../hooks/useProfCourses";
 
 const TabContainer = styled.div`
@@ -44,11 +44,11 @@ export default function ProfTabs({ user }) {
         }}
       >
         <Tab label="Students" />
-        <Tab label="Courses Taught" />
+        <Tab label="Courses" />
         <Tab label="Profile" />
       </Tabs>
       <TabPanel>
-        {selectedTab === 0 && <ProfStudInfo username={user?.username} />}
+        {selectedTab === 0 && <StudentsTaught username={user?.username} />}
         {selectedTab === 1 && (
           <ManageCoursesTaught
             profCoursesTaught={profCoursesTaught}

@@ -7,7 +7,7 @@ import DeleteModal from "../Shared/DeleteModal";
 import Table from "../Shared/Table";
 
 const MainContainer = styled.div`
-  width: 100%;
+  width: 85%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -62,7 +62,6 @@ export default function ManageCoursesTaught({
   const handleDelete = () => {
     const subject_code = selectedCourse.split(" ")[0];
     const catalog_number = selectedCourse.split(" ")[1];
-    console.log("To delete course taught", subject_code, catalog_number);
     deleteProfCourseTaught({ subject_code, catalog_number });
   };
 
@@ -123,7 +122,7 @@ export default function ManageCoursesTaught({
           <Button
             variant="outlined"
             onClick={handleAddCourse}
-            style={{ height: "100%" }}
+            style={{ height: "56px" }}
           >
             Add Course
           </Button>

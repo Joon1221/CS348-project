@@ -16,7 +16,7 @@ import EditStudent from "./EditStudent";
 import { getStudentsTaught } from "../../hooks/useProfCourses";
 
 const MainContainer = styled.div`
-  width: 100%;
+  width: 85%;
   height: 100%;
 `;
 
@@ -40,14 +40,14 @@ const MatEdit = () => {
 
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
-  { field: "username", headerName: "Username", width: 130 },
-  { field: "course", headerName: "Course", width: 130 },
-  { field: "termCode", headerName: "TermCode", width: 130 },
-  { field: "grade", headerName: "Grade", width: 130 },
-  { field: "credit", headerName: "Credit", width: 130 },
+  { field: "username", headerName: "Username", width: 120 },
+  { field: "course", headerName: "Course", width: 100 },
+  { field: "termCode", headerName: "TermCode", width: 100 },
+  { field: "grade", headerName: "Grade", width: 100 },
+  { field: "credit", headerName: "Credit", width: 100 },
 ];
 
-export default function ProfStudInfo({ username }) {
+export default function StudentsTaught({ username }) {
   // const [selectedStudent, setSelectedStudent] = useState({});
   // const [isEditing, setIsEditing] = useState(false);
 
@@ -57,19 +57,6 @@ export default function ProfStudInfo({ username }) {
   // };
 
   const [students, setStudents] = useState([]);
-
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const result = await getStudentsTaught({ username });
-        console.log(result);
-        setStudents(result);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    fetchStudent();
-  }, []);
 
   const transformedStudentsTaught = useMemo(
     () =>
@@ -84,12 +71,24 @@ export default function ProfStudInfo({ username }) {
     [students]
   );
 
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const result = await getStudentsTaught({ username });
+        setStudents(result);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchStudent();
+  }, []);
+
   return (
     <>
       {/* {!isEditing && ( */}
       <MainContainer>
         <Header>
-          <h2>History of Students</h2>
+          <h2>Students Taught</h2>
         </Header>
         <DataGrid
           checkboxSelection={false}
@@ -101,12 +100,8 @@ export default function ProfStudInfo({ username }) {
               paginationModel: { page: 0, pageSize: 10 },
             },
           }}
-          onCellClick={(e) => {
-            // console.log(e.row)
-            // handleEditClick(e.row);
-          }}
           pageSizeOptions={[10, 20]}
-          style={{ height: "85%" }}
+          style={{ height: "85%", width: "100%" }}
         />
       </MainContainer>
       {/* )} */}
