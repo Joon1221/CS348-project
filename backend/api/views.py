@@ -244,6 +244,17 @@ def update_password(request):
 #       - Professor
 #       - Building
 #       - Department
+@api_view(['GET'])
+def get_all_sections(request):
+    result = execute("SELECT * FROM Section")
+    sections = []
+    for row in result:
+        section_elts = []
+        for element in row:
+            section_elts.append(element)
+        sections.append(section_elts)
+
+    return Response({'message': sections})
 
 # ========================================
 # View Student Course History
@@ -251,6 +262,7 @@ def update_password(request):
 # TO DO:
 #   - Return info such as GPA Average, total credits, etc
 #   - prerequisite checking?
+
 
 @ api_view(['GET'])
 def get_user_course_taken(request):
