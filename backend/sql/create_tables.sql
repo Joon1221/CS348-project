@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS LoginCredentials (
 -- );
 
 CREATE TABLE IF NOT EXISTS Section (
-    course_id INT NOT NULL,
+    course_id VARCHAR(10) NOT NULL,
     course_offer_number INT NOT NULL,
     section_number INT NOT NULL,
     term INT,
