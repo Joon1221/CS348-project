@@ -3,7 +3,6 @@ import axios from "axios";
 
 const useUserCourses = (username) => {
   const [userCourses, setUserCourses] = useState([]);
-  const [courses, setCourses] = useState([]);
 
   const getUserCourses = useCallback(() => {
     axios
@@ -17,17 +16,6 @@ const useUserCourses = (username) => {
         console.log(`Get User Courses Error: ${error}`);
       });
   }, [username]);
-
-  const getAllCourses = () => {
-    axios
-      .get("http://localhost:8000/api/get_all_courses/")
-      .then((response) => {
-        setCourses(response.data.message);
-      })
-      .catch((error) => {
-        console.log(`Get All Courses Error: ${error}`);
-      });
-  };
 
   const addUserCourse = ({ subject_code, catalog_number }) => {
     axios
@@ -67,8 +55,6 @@ const useUserCourses = (username) => {
 
   return {
     userCourses,
-    courses,
-    getAllCourses,
     addUserCourse,
     deleteUserCourse,
   };

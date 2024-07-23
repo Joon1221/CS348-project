@@ -37,3 +37,14 @@ export const getAllSections = async () => {
     console.error(`Get all sections error:${error}`);
   }
 };
+
+export const getAllCourses = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/api/get_all_courses/"
+    );
+    return response.data.message;
+  } catch (error) {
+    console.error(`Get all sections error:${error}`);
+  }
+};
