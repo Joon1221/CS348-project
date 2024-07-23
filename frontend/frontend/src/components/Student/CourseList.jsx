@@ -9,14 +9,13 @@ const MainContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px;
 `;
 
 const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-cell {
     white-space: normal !important;
     word-wrap: break-word !important;
-    line-height: 1.5 !important;
+    line-height: 2 !important;
     display: block;
   }
   .MuiDataGrid-cellContent {
@@ -38,13 +37,13 @@ const StyledDataGrid = styled(DataGrid)`
 `;
 
 const columns = [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "cID", headerName: "Course ID", width: 120 },
+  { field: "id", headerName: "ID" },
+  { field: "cID", headerName: "Course ID", width: 115 },
   { field: "courseCode", headerName: "Course Code", width: 125 },
   {
     field: "cName",
     headerName: "Course Name",
-    width: 600,
+    width: 400,
     renderCell: (params) => (
       <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
         {params.value}
@@ -113,7 +112,7 @@ export default function CourseList({
         }}
         onChange={(e) => setSearchInput(e.target.value)}
       />
-      <div style={{ height: 550, width: "85%" }}>
+      <div style={{ height: 500, width: "85%" }}>
         <StyledDataGrid
           rows={filteredCourses}
           columns={columns}
