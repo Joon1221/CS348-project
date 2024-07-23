@@ -53,39 +53,12 @@ const columns = [
   },
 ];
 
-export default function CourseList() {
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
+export default function CourseList({
+  courses,
+  filteredCourses,
+  setFilteredCourses,
+}) {
   const [searchInput, setSearchInput] = useState("");
-
-  useEffect(() => {
-    // Fetching the results from cache or endpoint
-    const fetchCourses = async () => {
-      const cachedCourses = localStorage.getItem("courses");
-      if (cachedCourses) {
-        const formattedCourses = JSON.parse(cachedCourses);
-        setCourses(formattedCourses);
-        setFilteredCourses(formattedCourses);
-      } else {
-        try {
-          const result = await getAllCourses();
-          const formattedCourses = result.map((course, index) => ({
-            id: index,
-            cID: course[0],
-            courseCode: course[1] + course[2],
-            cName: course[3],
-          }));
-          setCourses(formattedCourses);
-          setFilteredCourses(formattedCourses);
-          localStorage.setItem("courses", JSON.stringify(formattedCourses));
-        } catch (error) {
-          console.error("Failed to fetch courses:", error);
-        }
-      }
-    };
-
-    fetchCourses();
-  }, []);
 
   // Memoized department codes
   const allDeptCodes = useMemo(() => {
