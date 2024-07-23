@@ -59,6 +59,7 @@ export default function CourseList() {
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
+    // Fetching the results from cache or endpoint
     const fetchCourses = async () => {
       const cachedCourses = localStorage.getItem("courses");
       if (cachedCourses) {
@@ -121,6 +122,7 @@ export default function CourseList() {
 
     handleSearch();
   }, [searchInput, courses, allDeptCodes]);
+
   return (
     <MainContainer>
       <h1>Search for courses</h1>
