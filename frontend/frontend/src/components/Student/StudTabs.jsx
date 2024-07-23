@@ -11,6 +11,7 @@ import Profile from "../Shared/Profile";
 
 const TabContainer = styled.div`
   display: flex;
+  flex-direction: row;
   height: 100%;
   margin-top: 20px;
 `;
@@ -23,13 +24,9 @@ const TabPanel = styled.div`
 `;
 
 export default function StudTabs({ user }) {
-  const {
-    courses,
-    getAllCourses,
-    userCourses,
-    addUserCourse,
-    deleteUserCourse,
-  } = useUserCourses(user?.username);
+  const { userCourses, addUserCourse, deleteUserCourse } = useUserCourses(
+    user?.username
+  );
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -44,7 +41,9 @@ export default function StudTabs({ user }) {
         variant="scrollable"
         value={selectedTab}
         onChange={handleTabChange}
-        style={{ width: "225px" }}
+        style={{
+          width: "250px",
+        }}
         sx={{
           "&& .MuiTab-root": {
             alignItems: "baseline",
@@ -65,9 +64,7 @@ export default function StudTabs({ user }) {
             deleteUserCourse={deleteUserCourse}
           />
         )}
-        {selectedTab === 1 && (
-          <CourseList courses={courses} getAllCourses={getAllCourses} />
-        )}
+        {selectedTab === 1 && <CourseList />}
         {selectedTab === 2 && <CoursesTaken />}
         {selectedTab === 3 && <SectionList />}
         {selectedTab === 4 && <Profile user={user} />}

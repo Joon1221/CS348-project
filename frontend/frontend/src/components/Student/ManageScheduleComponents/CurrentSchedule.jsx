@@ -16,8 +16,8 @@ const Header = styled.div`
 `;
 
 const columns = [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "course", headerName: "Course Code", width: 150 },
+  { field: "id", headerName: "ID" },
+  { field: "course", headerName: "Course Code", width: 180 },
 ];
 
 export default function CurrentSchedule({ userCourses, setView }) {
@@ -35,6 +35,7 @@ export default function CurrentSchedule({ userCourses, setView }) {
         <h2>Current Courses</h2>
       </Header>
       <DataGrid
+        columnVisibilityModel={{ id: false }}
         rows={transformedCourses}
         columns={columns}
         initialState={{
