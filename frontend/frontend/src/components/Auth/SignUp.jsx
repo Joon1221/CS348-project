@@ -41,10 +41,8 @@ const createUser = async ({ username, password, isProf }) => {
       password: password,
       is_prof: isProf,
     });
-    //console.log("success", response);
     return response.data.message;
   } catch (error) {
-    //console.log("error", error.response);
     throw error.response.data;
   }
 };
