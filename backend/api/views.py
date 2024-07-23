@@ -179,16 +179,16 @@ def login_user(request):
     # If username and password match, log in
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}' AND pass = '{password}'")
-    if result.rowcount is not 0:
+    if result.rowcount != 0:
         # Check if student or professor
         result = execute(f"SELECT * FROM Prof WHERE username = '{username}'")
-        if result.rowcount is not 0:
+        if result.rowcount != 0:
             return Response({'message': 'professor'}, 200)
         return Response({'message': 'student'}, 200)
 
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
-    if result.rowcount is not 0:
+    if result.rowcount != 0:
         return Response({'message': 'incorrect_password'}, 404)
 
     # Else, offer user to create an account
@@ -206,7 +206,7 @@ def signup_user(request):
     # If username matches, the username already exists
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
-    if result.rowcount is not 0:
+    if result.rowcount != 0:
         return Response({'message': 'username_exists'}, 404)
 
     # Else, sign up
@@ -230,7 +230,7 @@ def update_password(request):
     # If username matches, allow user to write new password
     result = execute(
         f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
-    if result.rowcount is not 0:
+    if result.rowcount != 0:
         result = execute(
             f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= '{username}'")
         return Response({'message': 'updated_password'}, 200)

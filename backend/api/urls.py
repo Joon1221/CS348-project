@@ -22,6 +22,8 @@ urlpatterns = [
          name='get_subject_codes'),
     path('get_catalog_numbers/', views.get_catalog_numbers,
          name='get_catalog_numbers'),
+    path('get_all_sections/', views.get_all_sections,
+         name='get_all_sections'),
     path('get_professor_course_taught/', views.get_professor_course_taught,
          name='get_professor_course_taught'),
     path('put_professor_course_taught/', views.put_professor_course_taught,
