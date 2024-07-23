@@ -6,8 +6,19 @@ export default function SectionList() {
 
   useEffect(() => {
     const fetchSections = async () => {
-      const result = await getAllSections();
-      console.log("RESULT", result);
+      // Check if we have the data in local storage
+      const cachedSections = localStorage.getItem("sections");
+
+      if (cachedSections) {
+        // If data is found in local storage, use it
+        setSections(JSON.parse(cachedSections));
+      } else {
+        // If not, fetch the data from the API
+        const result = await getAllSections();
+        setSections(result);
+        // Cache the data in local storage
+        localStorage.setItem("sections", JSON.stringify(result));
+      }
     };
 
     fetchSections();
@@ -16,7 +27,7 @@ export default function SectionList() {
   return (
     <>
       <h1>Section List</h1>
-      <p>Section list content</p>
+      {sections}
     </>
   );
 }
