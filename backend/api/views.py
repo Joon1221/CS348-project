@@ -100,6 +100,11 @@ def put_user_course(request):
 
     course_id = get_course_id(subject_code, catalog_number)
 
+    # Check if course is already in current schedule
+    result = execute(f"SELECT * FROM CurrentSchedule WHERE username = '{username}' AND course_id = '{course_id}'")
+    if result.rowcount != 0:
+        return Response({'message': 'taking_course'}, 404)
+
     # Insert the course_id into CurrentSchedule
     insert_query = f"""
     INSERT INTO CurrentSchedule (username, course_id)
@@ -306,7 +311,7 @@ def put_user_course_taken(request):
     # Insert the course_id into CoursesTaken
     insert_query = f"""
     INSERT INTO CoursesTaken (username, course_id, term_code, grade, credit)
-    VALUES ('{username}', '{course_id}')
+    VALUES ('{username}', '{course_id}', '{term_code}', '{grade}', '{credit}')
     """
 
     execute(insert_query)
