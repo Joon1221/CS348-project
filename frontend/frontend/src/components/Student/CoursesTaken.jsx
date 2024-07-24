@@ -81,6 +81,16 @@ const columns = [
   },
 ];
 
+// ERROR HANDLING
+// grades: check if a string represents an integer in [0, 100]
+function isGrade(n) {
+  return 0 === n % (!isNaN(parseFloat(n)) && 0 <= n && n <= 100);
+}
+// terms: check that string has the form (W,S,F) + xx
+function isTerm(str) {
+  return /^ ?[wWsSfF] ?[0-9][0-9] ?$/.test(str);
+}
+
 export default function CoursesTaken({
   userCoursesTaken,
   addUserCourseTaken,
@@ -97,6 +107,8 @@ export default function CoursesTaken({
   const [credits, setCredits] = useState(0.5);
   const [average, setAverage] = useState(0);
   const [totalCredits, setTotalCredits] = useState(0);
+  const [isInvalidGrade, setIsInvalidGrade] = useState(false);
+  const [isInvalidTerm, setIsInvalidTerm] = useState(false);
 
   const transformedCourses = userCoursesTaken.map((course, index) => ({
     id: index,
@@ -108,14 +120,15 @@ export default function CoursesTaken({
   }));
 
   const handleAddCourse = () => {
-    addUserCourseTaken({
-      subject_code: subjectCode,
-      catalog_number: catalogNum,
-      term_code: term,
-      grade: parseInt(grade,10),
-      credit: credits,
-    });
-    console.log(transformedCourses)
+    if (!isInvalidGrade && !isInvalidTerm) {
+      addUserCourseTaken({
+        subject_code: subjectCode,
+        catalog_number: catalogNum,
+        term_code: term.toUpperCase().replace(/\s/g,''), // consistent formatting (e.g. S24)
+        grade: parseInt(grade),
+        credit: credits,
+      });
+    }
   };
 
   const handleDelete = () => {
@@ -150,7 +163,6 @@ export default function CoursesTaken({
 
   // update cumulative values every time user's courses taken change
   useEffect(() => {
-    console.log(transformedCourses)
     if (transformedCourses.length === 0) {
       setAverage(0);
       setCredits(0);
@@ -203,14 +215,12 @@ export default function CoursesTaken({
             value={grade}
             inputProps={{ maxLength: 3 }}
             onChange={(e) => {
+              setIsInvalidGrade(!isGrade(e.target.value));
               setGrade(e.target.value);
-              // setIsInvalid({
-              //   errorMsg: "",
-              //   error: false,
-              // });
             }}
             placeholder="Grade"
-            // error={isInvalid.error}
+            error={isInvalidGrade}
+            helperText={isInvalidGrade && "Invalid grade"}
           />
           <TextField
             variant="outlined"
@@ -218,14 +228,12 @@ export default function CoursesTaken({
             value={term}
             inputProps={{ maxLength: 4 }}
             onChange={(e) => {
+              setIsInvalidTerm(!isTerm(e.target.value));
               setTerm(e.target.value);
-              // setIsInvalid({
-              //   errorMsg: "",
-              //   error: false,
-              // });
             }}
             placeholder="Term"
-            // error={isInvalid.error}
+            error={isInvalidTerm}
+            helperText={isInvalidTerm && "Invalid term"}
           />
           <FormControl sx={{minWidth: 90}}>
             <InputLabel id="creds">Credits</InputLabel>
