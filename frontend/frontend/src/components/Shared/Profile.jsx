@@ -21,10 +21,9 @@ const MainContainer = styled.div`
 `;
 
 const PasswordContainer = styled.div`
-  width: 25%;
+  width: 450px;
   margin-top: 20px;
   display: flex;
-  justify-content: space-between;
   flex-direction: row;
 `;
 
@@ -78,7 +77,9 @@ export default function Profile({ user }) {
       <h3>Username: {user.username}</h3>
       <PasswordContainer>
         <h3>Password: </h3>
-        <FormControl style={{ marginTop: "12px" }}>
+        <FormControl
+          style={{ marginTop: "12px", marginLeft: "15px", width: "100%" }}
+        >
           <Input
             type={showPassword ? "text" : "password"}
             disabled={isDisabled}
