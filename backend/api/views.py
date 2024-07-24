@@ -6,7 +6,7 @@ import json
 from urllib.parse import unquote
 
 
-def execute(query, username='postgres', password='1234'):
+def execute(query, params=None, username='postgres', password='1234'):
     host = 'localhost'
     port = '5432'
     database = 'postgres'
@@ -15,18 +15,23 @@ def execute(query, username='postgres', password='1234'):
         f'postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}')
 
     with db.connect() as conn:
-        result = conn.execute(text(query))
+        result = conn.execute(text(query), params or {})
         conn.commit()
         return result
 
 
 def get_course_id(subject_code, catalog_number):
-    query = f"""
+    query = """
     SELECT course_id FROM Course
-    WHERE subject_code = '{subject_code}' AND catalog_number = '{catalog_number}'
+    WHERE subject_code = :subject_code AND catalog_number = :catalog_number
     """
+    
+    params = {
+        'subject_code': subject_code,
+        'catalog_number': catalog_number
+    }
 
-    result = execute(query)
+    result = execute(query, params)
     if not result:
         return '000000'
 
@@ -78,10 +83,14 @@ def get_user_course(request):
     SELECT c.subject_code, c.catalog_number
     FROM CurrentSchedule cs
     JOIN Course c ON cs.course_id = c.course_id
-    WHERE cs.username = '{username}'
+    WHERE cs.username = :username
     """
 
-    result = execute(query)
+    params = {
+        'username': username
+    }
+
+    result = execute(query, params)
 
     courses = []
     for row in result:
@@ -100,18 +109,29 @@ def put_user_course(request):
 
     course_id = get_course_id(subject_code, catalog_number)
 
+    query = f"""
+    SELECT * FROM CurrentSchedule 
+    WHERE username = :username 
+    AND course_id = :course_id
+    """
+
+    params = {
+        'username': username,
+        'course_id': course_id
+    }
+
     # Check if course is already in current schedule
-    result = execute(f"SELECT * FROM CurrentSchedule WHERE username = '{username}' AND course_id = '{course_id}'")
+    result = execute(query, params)
     if result.rowcount != 0:
         return Response({'message': 'taking_course'}, 404)
 
     # Insert the course_id into CurrentSchedule
     insert_query = f"""
     INSERT INTO CurrentSchedule (username, course_id)
-    VALUES ('{username}', '{course_id}')
+    VALUES (:username, :course_id)
     """
 
-    execute(insert_query)
+    execute(insert_query, params)
 
     return Response({'message': 200})
 
@@ -133,11 +153,17 @@ def update_user_course(request):
     # Update the CurrentSchedule with the new course_id
     update_query = f"""
     UPDATE CurrentSchedule
-    SET course_id = '{new_course_id}'
-    WHERE username = '{username}' AND course_id = '{cur_course_id}'
+    SET course_id = :new_course_id
+    WHERE username = :username AND course_id = :cur_course_id
     """
 
-    execute(update_query)
+    params = {
+        'new_course_id': new_course_id,
+        'username': username,
+        'cur_course_id': cur_course_id
+    }
+
+    execute(update_query, params)
 
     return Response({'message': 200})
 
@@ -156,10 +182,15 @@ def delete_user_course(request):
     # Update the CurrentSchedule with the new course_id
     query = f"""
     DELETE FROM CurrentSchedule
-    WHERE course_id = '{course_id}' and username = '{username}';
+    WHERE course_id = :course_id and username = :username;
     """
 
-    execute(query)
+    params = {
+        'course_id': course_id,
+        'username': username
+    }
+
+    execute(query, params)
 
     return Response({'message': 200})
 
@@ -177,22 +208,27 @@ def login_user(request):
     username = unquote(request.GET.get('username', ''))
     password = unquote(request.GET.get('password', ''))
 
-    # request_json = json.loads(request.body)
-    # username = request_json['username']
-    # password = request_json['password']
+    query = f"""
+    SELECT * FROM LoginCredentials
+    WHERE username = :username 
+    AND pass = :password
+    """
+
+    params = {
+        'username': username,
+        'password': password
+    }
 
     # If username and password match, log in
-    result = execute(
-        f"SELECT * FROM LoginCredentials WHERE username = '{username}' AND pass = '{password}'")
+    result = execute(query, params)
     if result.rowcount != 0:
         # Check if student or professor
-        result = execute(f"SELECT * FROM Prof WHERE username = '{username}'")
+        result = execute(f"SELECT * FROM Prof WHERE username = :username", {'username': username})
         if result.rowcount != 0:
             return Response({'message': 'professor'}, 200)
         return Response({'message': 'student'}, 200)
 
-    result = execute(
-        f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
+    result = execute(f"SELECT * FROM LoginCredentials WHERE username = :username", {'username': username})
     if result.rowcount != 0:
         return Response({'message': 'incorrect_password'}, 404)
 
@@ -209,20 +245,19 @@ def signup_user(request):
     is_prof = request_json['is_prof']
 
     # If username matches, the username already exists
-    result = execute(
-        f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
+    result = execute(f"SELECT * FROM LoginCredentials WHERE username = :username", {'username': username})
     if result.rowcount != 0:
         return Response({'message': 'username_exists'}, 404)
 
     # Else, sign up
     result = execute(
-        f"INSERT INTO LoginCredentials (username, pass) VALUES ('{username}', '{password}');")
+        f"INSERT INTO LoginCredentials (username, pass) VALUES (:username, :password);", {'username': username, 'password': password})
 
     if is_prof:
-        result = execute(f"INSERT INTO Prof (username) VALUES ('{username}');")
+        result = execute(f"INSERT INTO Prof (username) VALUES (:username);", {'username': username})
         return Response({'message': 'professor'}, 200)
 
-    result = execute(f"INSERT INTO Student (username) VALUES ('{username}');")
+    result = execute(f"INSERT INTO Student (username) VALUES (:username);", {'username': username})
     return Response({'message': 'student'}, 200)
 
 
@@ -234,10 +269,10 @@ def update_password(request):
 
     # If username matches, allow user to write new password
     result = execute(
-        f"SELECT * FROM LoginCredentials WHERE username = '{username}'")
+        f"SELECT * FROM LoginCredentials WHERE username = :username", {'username': username})
     if result.rowcount != 0:
         result = execute(
-            f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= '{username}'")
+            f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= :username", {'username': username})
         return Response({'message': 'updated_password'}, 200)
 
 
@@ -283,10 +318,13 @@ def get_user_course_taken(request):
     SELECT c.subject_code, c.catalog_number, ct.term_code, ct.grade, ct.credit
     FROM CoursesTaken ct
     JOIN Course c ON ct.course_id = c.course_id
-    WHERE ct.username = '{username}'
+    WHERE ct.username = :username
     """
+    params = {
+        'username': username
+    }
 
-    result = execute(query)
+    result = execute(query, params)
 
     courses = []
     for row in result:
@@ -314,10 +352,18 @@ def put_user_course_taken(request):
     # Insert the course_id into CoursesTaken
     insert_query = f"""
     INSERT INTO CoursesTaken (username, course_id, term_code, grade, credit)
-    VALUES ('{username}', '{course_id}', '{term_code}', '{grade}', '{credit}')
+    VALUES (:username, :course_id, :term_code, :grade, :credit)
     """
+    
+    params = {
+        'username': username,
+        'course_id': course_id,
+        'term_code': term_code,
+        'grade': grade,
+        'credit': credit
+    }
 
-    execute(insert_query)
+    execute(insert_query, params)
 
     return Response({'message': 200})
 
@@ -339,11 +385,17 @@ def update_user_course_taken(request):
     # Update the CoursesTaken with the new course_id
     update_query = f"""
     UPDATE CoursesTaken
-    SET course_id = '{new_course_id}'
-    WHERE username = '{username}' AND course_id = '{cur_course_id}'
+    SET course_id = :new_course_id
+    WHERE username = :username AND course_id = :cur_course_id
     """
+    
+    params = {
+        'new_course_id': new_course_id,
+        'username': username,
+        'cur_course_id': cur_course_id,
+    }
 
-    execute(update_query)
+    execute(update_query, params)
 
     return Response({'message': 200})
 
@@ -361,10 +413,15 @@ def delete_user_course_taken(request):
 
     query = f"""
     DELETE FROM CoursesTaken
-    WHERE course_id = '{course_id}' and username = '{username}';
+    WHERE course_id = :course_id and username = :username;
     """
+    
+    params = {
+        'course_id': course_id,
+        'username': username
+    }
 
-    execute(query)
+    execute(query, params)
 
     return Response({'message': 200})
 
@@ -388,7 +445,7 @@ def get_subject_codes(request):
 def get_catalog_numbers(request):
     subject_code = unquote(request.GET.get('subject_code', ''))
     result = execute(
-        f"SELECT catalog_number FROM Course WHERE subject_code = '{subject_code}';")
+        f"SELECT catalog_number FROM Course WHERE subject_code = :subject_code;", {'subject_code': subject_code})
     catalog_numbers = []
     for row in result:
         catalog_numbers.append(row[0])
@@ -411,10 +468,14 @@ def get_professor_course_taught(request):
     SELECT c.subject_code, c.catalog_number
     FROM CoursesTaught ct
     JOIN Course c ON ct.course_id = c.course_id
-    WHERE ct.username = '{username}'
+    WHERE ct.username = :username
     """
 
-    result = execute(query)
+    params = {
+        'username': username
+    }
+
+    result = execute(query, params)
 
     courses = []
     for row in result:
@@ -436,10 +497,15 @@ def put_professor_course_taught(request):
     # Insert the course_id into CoursesTaught
     insert_query = f"""
     INSERT INTO CoursesTaught (username, course_id)
-    VALUES ('{username}', '{course_id}')
+    VALUES (:username, :course_id)
     """
 
-    execute(insert_query)
+    params = {
+        'username': username,
+        'course_id': course_id
+    }
+
+    execute(insert_query, params)
 
     return Response({'message': 200})
 
@@ -457,10 +523,15 @@ def delete_professor_course_taught(request):
 
     query = f"""
     DELETE FROM CoursesTaught
-    WHERE course_id = '{course_id}' and username = '{username}';
+    WHERE course_id = :course_id and username = :username;
     """
 
-    execute(query)
+    params = {
+        'course_id': course_id,
+        'username': username
+    }
+
+    execute(query, params)
 
     return Response({'message': 200})
 
@@ -475,7 +546,7 @@ def get_students_for_professor(request):
     JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Student s ON ctk.username = s.username
     JOIN Course c ON ctk.course_id = c.course_id
-    WHERE ct.username = '{username}'
+    WHERE ct.username = :username
     """
 
     current_schedule_query = f"""
@@ -484,11 +555,15 @@ def get_students_for_professor(request):
     JOIN CurrentSchedule cs ON ct.course_id = cs.course_id
     JOIN Student s ON cs.username = s.username
     JOIN Course c ON cs.course_id = c.course_id
-    WHERE ct.username = '{username}'
+    WHERE ct.username = :username
     """
 
-    courses_taken_result = execute(courses_taken_query)
-    current_schedule_result = execute(current_schedule_query)
+    params = { 
+        'username': username
+    }
+
+    courses_taken_result = execute(courses_taken_query, params)
+    current_schedule_result = execute(current_schedule_query, params)
 
     result1 = [tuple(row) for row in courses_taken_result]
     result2 = [tuple(row) + ('S24', 0, 0.0,)
