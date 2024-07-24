@@ -73,8 +73,7 @@ export default function StudTabs({ user }) {
   // Fetch sections from local storage or API
   const fetchSections = useCallback(async () => {
     try {
-      // const result = await fetchFromLocalStorage("sections", getAllSections); // TODO: implement back in one get all sections is fixed
-      const result = await getAllSections();
+      const result = await fetchFromLocalStorage("sections", getAllSections);
       setSections(result);
     } catch (error) {
       console.error("Failed to fetch sections:", error);
