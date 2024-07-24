@@ -17,20 +17,17 @@ const useUserCourses = (username) => {
       });
   }, [username]);
 
-  const addUserCourse = ({ subject_code, catalog_number }) => {
-    axios
-      .put("http://localhost:8000/api/put_user_course/", {
+  const addUserCourse = async ({ subject_code, catalog_number }) => {
+    try {
+      await axios.put("http://localhost:8000/api/put_user_course/", {
         username: username,
         subject_code: subject_code,
         catalog_number: catalog_number,
-      })
-      .then((response) => {
-        console.log(`Response:`, response.data.message);
-        getUserCourses();
-      })
-      .catch((error) => {
-        console.log(`Add Course Error: ${error}`);
       });
+      getUserCourses();
+    } catch (error) {
+      throw error.response.data;
+    }
   };
 
   const deleteUserCourse = ({ subject_code, catalog_number }) => {
