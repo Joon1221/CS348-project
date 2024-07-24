@@ -165,7 +165,7 @@ export default function CoursesTaken({
   useEffect(() => {
     if (transformedCourses.length === 0) {
       setAverage(0);
-      setCredits(0);
+      setTotalCredits(0);
     }
     else {
       const allGrades = transformedCourses.map((course) => course.grade);
