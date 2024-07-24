@@ -18,6 +18,8 @@ urlpatterns = [
          name='put_user_course_taken'),
     path('update_user_course_taken/', views.put_user_course_taken,
          name='update_user_course_taken'),
+    path('delete_user_course_taken/', views.delete_user_course_taken,
+         name='delete_user_course_taken'),
     path('get_subject_codes/', views.get_subject_codes,
          name='get_subject_codes'),
     path('get_catalog_numbers/', views.get_catalog_numbers,
