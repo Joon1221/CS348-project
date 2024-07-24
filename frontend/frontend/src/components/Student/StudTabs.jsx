@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import useUserCourses from "../../hooks/useUserCourses";
+import useUserCoursesTaken from "../../hooks/useUserCoursesTaken";
 import ManageSchedule from "./ManageScheduleComponents/ManageSchedule";
 import CourseList from "./CourseList";
 import CoursesTaken from "./CoursesTaken";
@@ -40,6 +41,12 @@ export default function StudTabs({ user }) {
   const { userCourses, addUserCourse, deleteUserCourse } = useUserCourses(
     user?.username
   );
+  const { 
+    userCoursesTaken, 
+    addUserCourseTaken, 
+    deleteUserCourseTaken
+  } = useUserCoursesTaken(user?.username)
+  
   const [selectedTab, setSelectedTab] = useState(0);
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
@@ -112,7 +119,11 @@ export default function StudTabs({ user }) {
             setFilteredCourses={setFilteredCourses}
           />
         )}
-        {selectedTab === 2 && <CoursesTaken />}
+        {selectedTab === 2 && <CoursesTaken 
+          userCoursesTaken={userCoursesTaken}
+          addUserCourseTaken={addUserCourseTaken}
+          deleteUserCourseTaken={deleteUserCourseTaken}
+        />}
         {selectedTab === 3 && <SectionList sections={sections} />}
         {selectedTab === 4 && <Profile user={user} />}
       </TabPanel>

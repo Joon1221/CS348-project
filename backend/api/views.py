@@ -290,8 +290,11 @@ def get_user_course_taken(request):
 
     courses = []
     for row in result:
-        courses.append(' '.join(map(str, row)))
-
+        course = []
+        for element in row:
+            course.append(element)
+        courses.append(course)
+    
     return Response({'message': courses})
 
 
