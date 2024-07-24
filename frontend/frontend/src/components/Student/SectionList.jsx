@@ -1,12 +1,8 @@
-// <<<<<<< Updated upstream
-// import React from "react";
-// =======
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { TextField, Autocomplete } from "@mui/material";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
-import { getAllSections } from "../../hooks/getDeptInfo";
 import { getAllDept } from "../../hooks/getDeptInfo";
 import { getAllDeptCourseCode } from "../../hooks/getDeptInfo";
 
@@ -47,7 +43,6 @@ const columns = [
   { field: "totSize", headerName: "Cap Size" },
   // { field: "location", headerName: "Location" },
 
-
   // { field: "subCode", headerName: "Subject Code", width: 125 },
   // { field: "catNo", headerName: "Catalog Number", width: 125 },
   // { field: "cName", headerName: "Course Name", width: 500},
@@ -64,29 +59,29 @@ function getWeekdays(str) {
   }
 
   var newStr = "";
-  if (arr.length === 0) newStr = "None"; // still display some text if weekday string is "NNNNNNN"
-  else newStr = arr.join();              // otherwise, return comma-separated string of weekdays
+  if (arr.length === 0)
+    newStr = "None"; // still display some text if weekday string is "NNNNNNN"
+  else newStr = arr.join(); // otherwise, return comma-separated string of weekdays
 
   return newStr;
 }
 
-export default function SectionList() {
-  const [sections, setSections] = useState([]);
+export default function SectionList({ sections }) {
   const [filteredSections, setFilteredSections] = useState([]);
   const [subjectCode, setSubjectCode] = useState(""); // eg. CS
   const [catalogNum, setCatalogNum] = useState(""); // 348
   const [departments, setDepartments] = useState([]);
   const [catalogNumbers, setCatalogNumbers] = useState([]);
-  
+
   useEffect(() => {
     const fetchDepartments = async () => {
       const result = await getAllDept();
       setDepartments(result);
     };
-    
+
     fetchDepartments();
   }, []);
-  
+
   useEffect(() => {
     const fetchDeptCatalogNums = async () => {
       if (subjectCode) {
@@ -94,70 +89,49 @@ export default function SectionList() {
         setCatalogNumbers(result);
       }
     };
-    
+
     fetchDeptCatalogNums();
   }, [subjectCode]);
-  
-  useEffect(() => {
-    const fetchSections = async () => {
-      // Check if we have the data in local storage
-      const cachedSections = localStorage.getItem("sections");
-      
-      if (cachedSections) {
-        // If data is found in local storage, use it
-        setSections(JSON.parse(cachedSections));
-      } else {
-        // If not, fetch the data from the API
-        const result = await getAllSections();
-        setSections(result);
-        // Cache the data in local storage
-        localStorage.setItem("sections", JSON.stringify(result));
-      }
-    };
-    
-    fetchSections();
-  }, []);
-  
-  console.log(sections)
-  
-  const transformedSections = sections.map((section, index) => ({
-    id: index,
-    subCode: section[11],
-    catNo: section[12],
-    // cID: section[0],
-    // cOfferNo: section[1],
-    sectionNo: section[2],
-    // term: section[3],
-    startTime: section[4].substring(11, 16), // e.g. "2024-07-22T10:00:00" => "10:00"
-    endTime: section[5].substring(11, 16),   // e.g. "2024-07-22T11:20:00" => "11:20"
-    weekdays: getWeekdays(section[6]),
-    secType: section[7],                     // this is component type (LEC, TUT, LAB)
-    curSize: section[8],                     // this is currently enrolled count
-    totSize: section[9],                     // this is total cap size
-    // location: section[10],                // location is always "None" D:
-  }))
+
+  // TODO: bring this back in once sections is working
+  // const transformedSections = sections.map((section, index) => ({
+  //   id: index,
+  //   subCode: section[11],
+  //   catNo: section[12],
+  //   // cID: section[0],
+  //   // cOfferNo: section[1],
+  //   sectionNo: section[2],
+  //   // term: section[3],
+  //   startTime: section[4].substring(11, 16), // e.g. "2024-07-22T10:00:00" => "10:00"
+  //   endTime: section[5].substring(11, 16), // e.g. "2024-07-22T11:20:00" => "11:20"
+  //   weekdays: getWeekdays(section[6]),
+  //   secType: section[7], // this is component type (LEC, TUT, LAB)
+  //   curSize: section[8], // this is currently enrolled count
+  //   totSize: section[9], // this is total cap size
+  //   // location: section[10],                // location is always "None" D:
+  // }));
 
   // const handleFilter = () => {
-  //   const fSections = transformedSections.filter((section) => 
+  //   const fSections = transformedSections.filter((section) =>
   //     section.subCode === subjectCode && section.catNo === catalogNum
   //   );
   //   setFilteredSections(fSections);
   //   // addUserCourse({ subject_code: subjectCode, catalog_number: catalogNum });
   // };
 
-  let check = false
-  const getSections = () => {
-    const fSections = transformedSections.filter((section) => 
-      section.subCode === subjectCode && section.catNo === catalogNum
-    );
-    setFilteredSections(fSections);
-    console.log(filteredSections)
-    check = true;
-    console.log(check)
-  }
-// >>>>>>> Stashed changes
+  // TODO: bring this back in once sections is working
+  // let check = false;
+  // const getSections = () => {
+  //   const fSections = transformedSections.filter(
+  //     (section) =>
+  //       section.subCode === subjectCode && section.catNo === catalogNum
+  //   );
+  //   setFilteredSections(fSections);
+  //   console.log(filteredSections);
+  //   check = true;
+  //   console.log(check);
+  // };
 
-// export default function SectionList({ sections }) {
   return (
     <MainContainer>
       <Header>
@@ -183,16 +157,15 @@ export default function SectionList() {
         />
         <Button
           variant="outlined"
-          onClick={getSections}
+          // onClick={getSections} //TODO: bring this back in once sections working
           style={{ marginTop: "20px" }}
         >
           Search
         </Button>
       </ContentContainer>
-      {/* {check &&  */}
       <ContentContainer>
         <DataGrid
-          rows={transformedSections}
+          // rows={transformedSections} // TODO: bring this back in when working
           columns={columns}
           columnVisibilityModel={{ id: false }}
           initialState={{
@@ -201,10 +174,9 @@ export default function SectionList() {
             },
           }}
           pageSizeOptions={[5, 10]}
-          style={{ marginTop: "30px" }} 
+          style={{ marginTop: "30px" }}
         />
       </ContentContainer>
-      {/*  } */}
     </MainContainer>
   );
 }

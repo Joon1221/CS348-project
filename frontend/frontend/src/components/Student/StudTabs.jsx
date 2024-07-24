@@ -41,12 +41,9 @@ export default function StudTabs({ user }) {
   const { userCourses, addUserCourse, deleteUserCourse } = useUserCourses(
     user?.username
   );
-  const { 
-    userCoursesTaken, 
-    addUserCourseTaken, 
-    deleteUserCourseTaken
-  } = useUserCoursesTaken(user?.username)
-  
+  const { userCoursesTaken, addUserCourseTaken, deleteUserCourseTaken } =
+    useUserCoursesTaken(user?.username);
+
   const [selectedTab, setSelectedTab] = useState(0);
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
@@ -59,7 +56,7 @@ export default function StudTabs({ user }) {
   // Fetch courses from local storage or API
   const fetchCourses = useCallback(async () => {
     try {
-      const result = await fetchFromLocalStorage("courses", getAllCourses);
+      const result = await getAllCourses();
       const formattedCourses = result.map((course, index) => ({
         id: index,
         cID: course[0],
@@ -76,7 +73,8 @@ export default function StudTabs({ user }) {
   // Fetch sections from local storage or API
   const fetchSections = useCallback(async () => {
     try {
-      const result = await fetchFromLocalStorage("sections", getAllSections);
+      // const result = await fetchFromLocalStorage("sections", getAllSections); // TODO: implement back in one get all sections is fixed
+      const result = await getAllSections();
       setSections(result);
     } catch (error) {
       console.error("Failed to fetch sections:", error);
@@ -119,11 +117,13 @@ export default function StudTabs({ user }) {
             setFilteredCourses={setFilteredCourses}
           />
         )}
-        {selectedTab === 2 && <CoursesTaken 
-          userCoursesTaken={userCoursesTaken}
-          addUserCourseTaken={addUserCourseTaken}
-          deleteUserCourseTaken={deleteUserCourseTaken}
-        />}
+        {selectedTab === 2 && (
+          <CoursesTaken
+            userCoursesTaken={userCoursesTaken}
+            addUserCourseTaken={addUserCourseTaken}
+            deleteUserCourseTaken={deleteUserCourseTaken}
+          />
+        )}
         {selectedTab === 3 && <SectionList sections={sections} />}
         {selectedTab === 4 && <Profile user={user} />}
       </TabPanel>
