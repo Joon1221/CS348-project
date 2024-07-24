@@ -91,6 +91,7 @@ export default function StudentsTaught({ username }) {
           <h2>Students Taught</h2>
         </Header>
         <DataGrid
+          columnVisibilityModel={{ id: false }}
           checkboxSelection={false}
           disableMultipleRowSelection
           rows={transformedStudentsTaught}

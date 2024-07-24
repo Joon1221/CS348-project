@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from "@mui/x-data-grid";
-import { getAllCourses } from "../../hooks/getDeptInfo";
 
 const MainContainer = styled.div`
   flex: 1;

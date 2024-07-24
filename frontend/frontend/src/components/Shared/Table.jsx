@@ -5,6 +5,7 @@ import { columns } from "./columns";
 export default function Table({ rows, setSelectedCourse, setOpen }) {
   return (
     <DataGrid
+      columnVisibilityModel={{ id: false }}
       rows={rows}
       columns={columns}
       onCellClick={(e) => {
