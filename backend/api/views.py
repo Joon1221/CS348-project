@@ -246,7 +246,13 @@ def update_password(request):
 #       - Department
 @api_view(['GET'])
 def get_all_sections(request):
-    result = execute("SELECT * FROM Section")
+    query = f"""
+    SELECT s.*, c.subject_code, c.catalog_number
+    FROM Section s
+    JOIN Course c ON s.course_id = c.course_id
+    """
+
+    result = execute(query)
     sections = []
     for row in result:
         section_elts = []
