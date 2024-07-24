@@ -47,6 +47,22 @@ const createUser = async ({ username, password, isProf }) => {
   }
 };
 
+const isStrongPassword = (password) => {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  return (
+    password.length >= minLength &&
+    hasUpperCase &&
+    hasLowerCase &&
+    hasNumbers &&
+    hasSpecialChar
+  );
+};
+
 export default function SignUp() {
   let navigate = useNavigate();
   const { setUser } = useContext(UserContext);
@@ -60,6 +76,15 @@ export default function SignUp() {
   });
 
   const handleSignUp = async () => {
+    if (!isStrongPassword(password)) {
+      setIsInvalid({
+        errorMsg:
+          "Password must be at least 8 characters long, contain uppercase and lowercase letters, numbers, and special characters.",
+        error: true,
+      });
+      return;
+    }
+
     const isProf = role === 0 ? false : true;
     try {
       await createUser({ username, password, isProf });
@@ -88,6 +113,10 @@ export default function SignUp() {
           value={username}
           onChange={(e) => {
             setUsername(e.target.value);
+            setIsInvalid({
+              errorMsg: "",
+              error: false,
+            });
           }}
         />
         <FormControl variant="outlined" style={{ marginTop: "15px" }}>
@@ -110,6 +139,10 @@ export default function SignUp() {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
+              setIsInvalid({
+                errorMsg: "",
+                error: false,
+              });
             }}
             error={isInvalid.error}
           />
