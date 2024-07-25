@@ -9,3 +9,8 @@ SELECT * FROM Course LIMIT 10;
 INSERT INTO LoginCredentials (student_username, student_password) VALUES ('Bob', 'pass')
 SELECT * FROM LoginCredentials WHERE student_username = 'Bob' AND student_password = 'pass'; 
 ----------------------------------------
+SELECT * FROM Section LIMIT 10;
+----------------------------------------
+INSERT INTO Prof (prof_username) VALUES ('phillip')
+SELECT * FROM Prof WHERE prof_username = 'phillip'
+----------------------------------------

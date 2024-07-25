@@ -1,7 +1,16 @@
 ----------------------------------------
-MATH 135
-SE 463
+Feature 1: Managing student's current schedule
+
+Query 1 Expected Output:
+CS 348
+CS 341
+
+Query 2 Expected Output:
+CS 341
 ----------------------------------------
+Feature 2: View courses from the course list 
+
+Query 1 Expected Output: 
 ('000003', 'ACC', '610', 'Public Accounting Practice', 'Public Accounting Practice')
 ('000004', 'ACC', '611', 'External Reporting with Integration', 'External Reporting')
 ('000011', 'ACC', '625', 'Foundations of Venture Creation', 'Venture Creation')
@@ -12,6 +21,39 @@ SE 463
 ('000028', 'ACC', '680', 'Systems and Analysis for Management Decision-making', 'Systems & Analysis for Mang DM')
 ('000029', 'ACC', '681', 'Understanding and Managing Organizational Change', 'Understanding Mgmt Org Change')
 ('000030', 'ACC', '690', 'Topics in Accounting', 'Topics in Accounting')
-----------------------------------------
-('Bob', 'pass')
-----------------------------------------
+
+-- REMAINING OUTPUT IS CUT OFF SINCE THERE ARE A LOT OF ENTRIES
+
+Feature 3: Log In/Sign Up
+Query 1 Expected Output:
+-- LoginCredentials should now have the following entry
+('alex123', 'mypass')
+
+-- Professor/User should now have the following entry
+('alex123')
+
+Query 2 Expected Output:
+-- The corresponding home page should appear for the logged in user
+
+Query 3 Expected Output:
+-- LoginCredentials should now have the following entry
+('alex123', 'newpass')
+
+Feature 4: Special access to admin users (Professors):
+Query 1 Expected Output:
+('user4', 'CS', '341', 'W23', 78, 1.0)
+('user5', 'CS', '348', 'S23', 80, 1.0)
+('user1', 'CS', '348', 'S23', 91, 1.0)
+
+Query 2 Expected Output:
+('user1', 'CS', '341')
+('user2', 'CS', '341')
+('user3', 'CS', '348')
+
+Feature 5: Viewing student course history
+Query Expected Output:
+('CS', '348', 'F21', 89, 0.5)
+('CS', '341', 'F22', 70, 0.5)
+
+Feature 6: View info about course sections
+Query Expected Output:
