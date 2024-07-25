@@ -543,17 +543,16 @@ def get_students_for_professor(request):
     courses_taken_query = f"""
     SELECT DISTINCT s.username, c.subject_code, c.catalog_number, ctk.term_code, ctk.grade, ctk.credit
     FROM CoursesTaught ct
-    JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Student s ON ctk.username = s.username
+    JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Course c ON ctk.course_id = c.course_id
     WHERE ct.username = :username
     """
 
     current_schedule_query = f"""
-        SELECT DISTINCT s.username, c.subject_code, c.catalog_number
+    SELECT DISTINCT s.username, c.subject_code, c.catalog_number
     FROM CoursesTaught ct
     JOIN CurrentSchedule cs ON ct.course_id = cs.course_id
-    JOIN Student s ON cs.username = s.username
     JOIN Course c ON cs.course_id = c.course_id
     WHERE ct.username = :username
     """
