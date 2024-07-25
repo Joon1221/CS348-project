@@ -541,7 +541,7 @@ def get_students_for_professor(request):
     username = unquote(request.GET.get('username', ''))
 
     courses_taken_query = f"""
-    SELECT DISTINCT s.username, c.subject_code, c.catalog_number, ctk.term_code, ctk.grade, ctk.credit
+    SELECT DISTINCT ctk.username, c.subject_code, c.catalog_number, ctk.term_code, ctk.grade, ctk.credit
     FROM CoursesTaught ct
     JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Course c ON ctk.course_id = c.course_id
@@ -549,7 +549,7 @@ def get_students_for_professor(request):
     """
 
     current_schedule_query = f"""
-    SELECT DISTINCT s.username, c.subject_code, c.catalog_number
+    SELECT DISTINCT cs.username, c.subject_code, c.catalog_number
     FROM CoursesTaught ct
     JOIN CurrentSchedule cs ON ct.course_id = cs.course_id
     JOIN Course c ON cs.course_id = c.course_id
