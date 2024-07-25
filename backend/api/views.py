@@ -272,7 +272,7 @@ def update_password(request):
         f"SELECT * FROM LoginCredentials WHERE username = :username", {'username': username})
     if result.rowcount != 0:
         result = execute(
-            f"UPDATE LoginCredentials SET pass='{new_password}' WHERE username= :username", {'username': username})
+            f"UPDATE LoginCredentials SET pass=':new_password' WHERE username= :username", {"new_password": new_password, 'username': username})
         return Response({'message': 'updated_password'}, 200)
 
 
@@ -543,7 +543,6 @@ def get_students_for_professor(request):
     courses_taken_query = f"""
     SELECT DISTINCT s.username, c.subject_code, c.catalog_number, ctk.term_code, ctk.grade, ctk.credit
     FROM CoursesTaught ct
-    JOIN Student s ON ctk.username = s.username
     JOIN CoursesTaken ctk ON ct.course_id = ctk.course_id
     JOIN Course c ON ctk.course_id = c.course_id
     WHERE ct.username = :username
