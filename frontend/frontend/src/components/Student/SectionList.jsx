@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { TextField, Autocomplete } from "@mui/material";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
-import { getAllDept } from "../../hooks/getDeptInfo";
 import { getAllDeptCourseCode } from "../../hooks/getDeptInfo";
 
 const MainContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const Header = styled.div`
@@ -21,26 +18,58 @@ const Header = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  width: 50%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
+const SectionSearchContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 85%;
+  justify-content: space-between;
+  padding-bottom: 2rem;
+`;
+
+const StyledDataGrid = styled(DataGrid)`
+  .MuiDataGrid-cell {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    line-height: 2 !important;
+    display: block;
+  }
+  .MuiDataGrid-cellContent {
+    display: block;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+  .MuiDataGrid-columnHeader {
+    white-space: normal;
+    word-wrap: break-word;
+    display: block;
+  }
+  .MuiDataGrid-columnHeaderTitle {
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+    text-align: left;
+  }
+`;
+
 // column names
 const columns = [
   { field: "id", headerName: "id" },
-  { field: "subCode", headerName: "Subject Code" },
-  { field: "catNo", headerName: "Catalog #" },
+  { field: "courseCode", headerName: "Course Code", minWidth: 110, flex: 1 },
+  { field: "secType", headerName: "Section Type", minWidth: 70, flex: 1 },
   // { field: "cOfferNo", headerName: "Course Offer #"},
-  { field: "sectionNo", headerName: "Section #" },
+  { field: "sectionNo", headerName: "Section Number", minWidth: 70, flex: 1 },
   // { field: "term", headerName: "Term" },
-  { field: "startTime", headerName: "Start Time" },
-  { field: "endTime", headerName: "End Time" },
-  { field: "weekdays", headerName: "Weekdays" },
-  { field: "secType", headerName: "Component Type" },
-  { field: "curSize", headerName: "Enrolled" },
-  { field: "totSize", headerName: "Cap Size" },
+  { field: "startTime", headerName: "Start Time", minWidth: 70, flex: 1 },
+  { field: "endTime", headerName: "End Time", minWidth: 70, flex: 1 },
+  { field: "weekdays", headerName: "Weekdays", minWidth: 80, flex: 1.5 },
+  { field: "curSize", headerName: "Enrolled", minWidth: 70, flex: 1 },
+  { field: "totSize", headerName: "Cap Size", minWidth: 50, flex: 1 },
   // { field: "location", headerName: "Location" },
 
   // { field: "subCode", headerName: "Subject Code", width: 125 },
@@ -49,38 +78,27 @@ const columns = [
   // { field: "desc", headerName: "Desc"},
 ];
 
-// some stuff for processing the weekday strings, which look like "YNYNYNN"
-const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-function getWeekdays(str) {
-  var arr = [];
-  for (let i = 0; i < 7; ++i) {
-    if (str[i] === "Y") arr.push(weekdays[i]);
-  }
-
-  var newStr = "";
-  if (arr.length === 0)
-    newStr = "None"; // still display some text if weekday string is "NNNNNNN"
-  else newStr = arr.join(); // otherwise, return comma-separated string of weekdays
-
-  return newStr;
+// for splitting course codes into subject code + catalog #
+function splitCourseCode(code) {
+  return code.match(/[A-Z]+|[0-9]+[A-Z]?/g);
 }
 
-export default function SectionList({ sections }) {
-  const [filteredSections, setFilteredSections] = useState([]);
+export default function SectionList({ 
+  sections,
+  filteredSections,
+  setFilteredSections,
+}) {
   const [subjectCode, setSubjectCode] = useState(""); // eg. CS
   const [catalogNum, setCatalogNum] = useState(""); // 348
-  const [departments, setDepartments] = useState([]);
   const [catalogNumbers, setCatalogNumbers] = useState([]);
+  const [noSections, setNoSections] = useState(false); 
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      const result = await getAllDept();
-      setDepartments(result);
-    };
-
-    fetchDepartments();
-  }, []);
+  // Memoized department codes
+  const allDeptCodes = useMemo(() => {
+    return [...new Set(sections.map((section) => 
+      splitCourseCode(section.courseCode)[0]))];
+  }, [sections]);
+  // console.log(allDeptCodes)
 
   useEffect(() => {
     const fetchDeptCatalogNums = async () => {
@@ -93,44 +111,18 @@ export default function SectionList({ sections }) {
     fetchDeptCatalogNums();
   }, [subjectCode]);
 
-  // TODO: bring this back in once sections is working
-  // const transformedSections = sections.map((section, index) => ({
-  //   id: index,
-  //   subCode: section[11],
-  //   catNo: section[12],
-  //   // cID: section[0],
-  //   // cOfferNo: section[1],
-  //   sectionNo: section[2],
-  //   // term: section[3],
-  //   startTime: section[4].substring(11, 16), // e.g. "2024-07-22T10:00:00" => "10:00"
-  //   endTime: section[5].substring(11, 16), // e.g. "2024-07-22T11:20:00" => "11:20"
-  //   weekdays: getWeekdays(section[6]),
-  //   secType: section[7], // this is component type (LEC, TUT, LAB)
-  //   curSize: section[8], // this is currently enrolled count
-  //   totSize: section[9], // this is total cap size
-  //   // location: section[10],                // location is always "None" D:
-  // }));
-
-  // const handleFilter = () => {
-  //   const fSections = transformedSections.filter((section) =>
-  //     section.subCode === subjectCode && section.catNo === catalogNum
-  //   );
-  //   setFilteredSections(fSections);
-  //   // addUserCourse({ subject_code: subjectCode, catalog_number: catalogNum });
-  // };
-
-  // TODO: bring this back in once sections is working
-  // let check = false;
-  // const getSections = () => {
-  //   const fSections = transformedSections.filter(
-  //     (section) =>
-  //       section.subCode === subjectCode && section.catNo === catalogNum
-  //   );
-  //   setFilteredSections(fSections);
-  //   console.log(filteredSections);
-  //   check = true;
-  //   console.log(check);
-  // };
+ // Handle filtering by courses
+  const handleFilter = () => {
+    const filtered = sections.filter((section) => {
+      const code = splitCourseCode(section.courseCode);
+      // console.log(code)
+      return code[0] === subjectCode 
+      && code[1] === catalogNum;
+    });
+    setFilteredSections(filtered);
+    const noSect = (filtered.length === 0) ? true : false;
+    setNoSections(noSect);
+  };
 
   return (
     <MainContainer>
@@ -138,9 +130,11 @@ export default function SectionList({ sections }) {
         <h2>View Sections by Course</h2>
       </Header>
       <ContentContainer>
+      <SectionSearchContainer>
         <Autocomplete
           disablePortal
-          options={departments}
+          options={allDeptCodes}
+          style={{ width: "43%" }}
           renderInput={(params) => (
             <TextField {...params} label="Subject Code" />
           )}
@@ -149,7 +143,7 @@ export default function SectionList({ sections }) {
         <Autocomplete
           disablePortal
           options={catalogNumbers}
-          style={{ marginTop: "20px" }}
+          style={{ width: "43%" }}
           renderInput={(params) => (
             <TextField {...params} label="Catalog Number" />
           )}
@@ -157,15 +151,20 @@ export default function SectionList({ sections }) {
         />
         <Button
           variant="outlined"
-          // onClick={getSections} //TODO: bring this back in once sections working
-          style={{ marginTop: "20px" }}
+          onClick={handleFilter} //TODO: bring this back in once sections working
+          // style={{ marginTop: "20px" }}
         >
           Search
         </Button>
-      </ContentContainer>
-      <ContentContainer>
-        <DataGrid
-          // rows={transformedSections} // TODO: bring this back in when working
+        </SectionSearchContainer>
+        {noSections && 
+          <Header>
+            <h3>No sections offered this term!</h3> 
+          </Header>}
+        <div style={{ height: 500, width: "85%" }}>
+        {filteredSections.length > 0 && 
+        <StyledDataGrid
+          rows={filteredSections} 
           columns={columns}
           columnVisibilityModel={{ id: false }}
           initialState={{
@@ -174,8 +173,10 @@ export default function SectionList({ sections }) {
             },
           }}
           pageSizeOptions={[5, 10]}
-          style={{ marginTop: "30px" }}
+          style={{ height: "85%", width: "100%" }}
         />
+        }
+        </div>
       </ContentContainer>
     </MainContainer>
   );

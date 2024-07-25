@@ -48,6 +48,7 @@ export default function StudTabs({ user }) {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [sections, setSections] = useState([]);
+  const [filteredSections, setFilteredSections] = useState([]);
 
   const handleTabChange = (_, newValue) => {
     setSelectedTab(newValue);
@@ -71,10 +72,42 @@ export default function StudTabs({ user }) {
   }, []);
 
   // Fetch sections from local storage or API
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  function getWeekdays(str) {
+    var arr = [];
+    for (let i = 0; i < 7; ++i) {
+      if (str[i] === "Y") arr.push(weekdays[i]);
+    }
+    var newStr = "";
+    if (arr.length === 0)
+      newStr = "None"; // still display some text if weekday string is "NNNNNNN"
+    else newStr = arr.join(', '); // otherwise, return comma-separated string of weekdays
+
+    return newStr;
+  }
   const fetchSections = useCallback(async () => {
     try {
       const result = await fetchFromLocalStorage("sections", getAllSections);
-      setSections(result);
+      // const result = await getAllSections();
+      console.log(result)
+      const formattedSections = result.map((section, index) => ({
+        id: index,
+        courseCode: section[11] + section[12],
+        // subCode: section[11],
+        // catNo: section[12],
+        // cID: section[0],
+        // cOfferNo: section[1],
+        sectionNo: section[2],
+        // term: section[3],
+        startTime: section[4].substring(11, 16), // e.g. "2024-07-22T10:00:00" => "10:00"
+        endTime: section[5].substring(11, 16), // e.g. "2024-07-22T11:20:00" => "11:20"
+        weekdays: getWeekdays(section[6]),
+        secType: section[7], // this is component type (LEC, TUT, LAB)
+        curSize: section[8], // this is currently enrolled count
+        totSize: section[9], // this is total cap size
+        // location: section[10],                // location is always "None" D:
+      }));
+      setSections(formattedSections);
     } catch (error) {
       console.error("Failed to fetch sections:", error);
     }
@@ -123,7 +156,11 @@ export default function StudTabs({ user }) {
             deleteUserCourseTaken={deleteUserCourseTaken}
           />
         )}
-        {selectedTab === 3 && <SectionList sections={sections} />}
+        {selectedTab === 3 && <SectionList 
+          sections={sections} 
+          filteredSections={filteredSections}
+          setFilteredSections={setFilteredSections}/>
+        }
         {selectedTab === 4 && <Profile user={user} />}
       </TabPanel>
     </TabContainer>

@@ -60,12 +60,12 @@ const MatEdit = () => {
 };
 
 const columns = [
-  { field: "id", headerName: "ID" },
-  { field: "subCode", headerName: "Department" }, 
-  { field: "catNo", headerName: "Catalog #" }, // rename later? idk lol
-  { field: "term", headerName: "Term" },
-  { field: "grade", headerName: "Grade" },
-  { field: "credit", headerName: "Credit" },
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "subCode", headerName: "Department", flex: 1 }, 
+  { field: "catNo", headerName: "Catalog #", flex: 1 }, // rename later? idk lol
+  { field: "term", headerName: "Term", flex: 1 },
+  { field: "grade", headerName: "Grade", flex: 1 },
+  { field: "credit", headerName: "Credit", flex: 1 },
   {
     field: "delete",
     headerName: "Delete",

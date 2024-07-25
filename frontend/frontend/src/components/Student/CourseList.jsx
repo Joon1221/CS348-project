@@ -38,8 +38,8 @@ const StyledDataGrid = styled(DataGrid)`
 
 const columns = [
   { field: "id", headerName: "ID" },
-  { field: "cID", headerName: "Course ID", width: 115 },
-  { field: "courseCode", headerName: "Course Code", width: 125 },
+  { field: "cID", headerName: "Course ID", minWidth: 115, flex: 1 },
+  { field: "courseCode", headerName: "Course Code", minWidth: 125, flex: 1 },
   {
     field: "cName",
     headerName: "Course Name",
@@ -49,6 +49,7 @@ const columns = [
         {params.value}
       </div>
     ),
+    flex: 3 // can change this
   },
 ];
 
