@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from "@mui/x-data-grid";
+import { getAllDept } from "../../hooks/getDeptInfo";
 
 const MainContainer = styled.div`
   flex: 1;
@@ -57,11 +58,16 @@ export default function CourseList({
   setFilteredCourses,
 }) {
   const [searchInput, setSearchInput] = useState("");
+  const [departments, setDepartments] = useState([]);
 
-  // Memoized department codes
-  const allDeptCodes = useMemo(() => {
-    return [...new Set(courses.map((course) => course.cID))]; // Assuming course[1] is the department code
-  }, [courses]);
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      const result = await getAllDept();
+      setDepartments(result);
+    };
+
+    fetchDepartments();
+  }, []);
 
   // Handle search input
   useEffect(() => {
@@ -69,7 +75,7 @@ export default function CourseList({
       const searchedCourse = searchInput.replace(/\s/g, "").toUpperCase();
       const toUpperCase = (str) => str.toUpperCase();
 
-      const isDeptSearch = allDeptCodes.includes(searchedCourse);
+      const isDeptSearch = departments.includes(searchedCourse);
 
       const filtered = courses.filter((course) => {
         const courseCode = toUpperCase(course.courseCode);
@@ -92,7 +98,7 @@ export default function CourseList({
     };
 
     handleSearch();
-  }, [searchInput, courses, allDeptCodes]);
+  }, [searchInput, courses, departments]);
 
   return (
     <MainContainer>

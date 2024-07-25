@@ -34,7 +34,6 @@ export default function DeleteCourse({
     const subject_code = selectedCourse.split(" ")[0];
     const catalog_number = selectedCourse.split(" ")[1];
     deleteUserCourse({ subject_code, catalog_number });
-    setView("default");
   };
 
   return (
@@ -51,7 +50,7 @@ export default function DeleteCourse({
         setOpen={setOpen}
       />
       <DeleteModal
-        text="Are you sure you want to stop teaching"
+        text="Are you sure you want to stop taking"
         selectedCourse={selectedCourse}
         handleDelete={handleDelete}
         setSelectedCourse={setSelectedCourse}
