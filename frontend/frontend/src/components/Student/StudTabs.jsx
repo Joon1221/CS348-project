@@ -57,7 +57,7 @@ export default function StudTabs({ user }) {
   // Fetch courses from local storage or API
   const fetchCourses = useCallback(async () => {
     try {
-      const result = await getAllCourses();
+      const result = await fetchFromLocalStorage("courses", getAllCourses);
       const formattedCourses = result.map((course, index) => ({
         id: index,
         cID: course[0],
@@ -81,15 +81,13 @@ export default function StudTabs({ user }) {
     var newStr = "";
     if (arr.length === 0)
       newStr = "None"; // still display some text if weekday string is "NNNNNNN"
-    else newStr = arr.join(', '); // otherwise, return comma-separated string of weekdays
+    else newStr = arr.join(", "); // otherwise, return comma-separated string of weekdays
 
     return newStr;
   }
   const fetchSections = useCallback(async () => {
     try {
       const result = await fetchFromLocalStorage("sections", getAllSections);
-      // const result = await getAllSections();
-      console.log(result)
       const formattedSections = result.map((section, index) => ({
         id: index,
         courseCode: section[11] + section[12],
@@ -156,11 +154,13 @@ export default function StudTabs({ user }) {
             deleteUserCourseTaken={deleteUserCourseTaken}
           />
         )}
-        {selectedTab === 3 && <SectionList 
-          sections={sections} 
-          filteredSections={filteredSections}
-          setFilteredSections={setFilteredSections}/>
-        }
+        {selectedTab === 3 && (
+          <SectionList
+            sections={sections}
+            filteredSections={filteredSections}
+            setFilteredSections={setFilteredSections}
+          />
+        )}
         {selectedTab === 4 && <Profile user={user} />}
       </TabPanel>
     </TabContainer>
