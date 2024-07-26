@@ -272,7 +272,7 @@ def update_password(request):
         f"SELECT * FROM LoginCredentials WHERE username = :username", {'username': username})
     if result.rowcount != 0:
         result = execute(
-            f"UPDATE LoginCredentials SET pass=':new_password' WHERE username= :username", {"new_password": new_password, 'username': username})
+            f"UPDATE LoginCredentials SET pass=:new_password WHERE username= :username", {"new_password": new_password, 'username': username})
         return Response({'message': 'updated_password'}, 200)
 
 
