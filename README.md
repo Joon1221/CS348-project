@@ -1,7 +1,11 @@
 ## Getting Started
 ### How to load the dataset
 
-run `python populate_db.py`
+Run the following commands:
+
+`cd backend/scripts`
+`python create_tables.py`
+`python populate_tables.py`
 
 This script will use UWaterloo's OpenData API to query the course offerings and information. It will use that data and create and populate the appropriate tables in our database.
 
