@@ -78,3 +78,10 @@ SELECT c.subject_code, c.catalog_number, ct.term_code, ct.grade, ct.credit
 FROM CoursesTaken ct
 JOIN Course c ON ct.course_id = c.course_id
 WHERE ct.username = 'jacob'
+Feature 6: Updating password
+-- Query:
+SELECT * FROM LoginCredentials WHERE username = 'b8smith'
+-- If username exists, proceed.
+
+UPDATE LoginCredentials SET pass='School678+' WHERE username= 'b8smith'
+SELECT * FROM LoginCredentials WHERE username = 'b8smith'

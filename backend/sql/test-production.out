@@ -54,3 +54,7 @@ Feature 5: Viewing student course history
 Query Expected Output:
 ('CS', '348', 'F21', 89, 0.5)
 ('CS', '341', 'F22', 70, 0.5)
+
+Feature 6: Updating password
+Query Expected Output:
+('b8smith', 'School678+')
